@@ -1,0 +1,1 @@
+include 'android', 'server', 'html', 'core', 'lwjgl3'
