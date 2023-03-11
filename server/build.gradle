@@ -5,7 +5,7 @@ mainClassName = 'com.chadgames.gamespack.server.ServerLauncher'
 eclipse.project.name = appName + '-server'
 
 dependencies {
-  implementation project(':core')
+  implementation project(path: ':core')
 }
 
 jar {
