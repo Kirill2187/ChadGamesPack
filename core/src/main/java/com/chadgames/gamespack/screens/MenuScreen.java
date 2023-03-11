@@ -1,6 +1,7 @@
 package com.chadgames.gamespack.screens;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 /** First screen of the application. Displayed after the application is created. */
 public class MenuScreen implements Screen {
@@ -11,7 +12,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // Draw your screen here. "delta" is the time since last render in seconds.
+        ScreenUtils.clear(1, 0, 0, 1);
     }
 
     @Override
