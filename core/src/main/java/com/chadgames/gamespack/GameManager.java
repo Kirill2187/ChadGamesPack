@@ -1,11 +1,20 @@
 package com.chadgames.gamespack;
 
 import com.badlogic.gdx.Game;
+import com.chadgames.gamespack.screens.MenuScreen;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class GameManager extends Game {
+
+    private static GameManager instance;
+    public static GameManager getInstance() {
+        return instance;
+    }
+    public GameManager() {
+        instance = this;
+    }
+
     @Override
     public void create() {
-        setScreen(new FirstScreen());
+        setScreen(new MenuScreen());
     }
 }
