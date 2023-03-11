@@ -38,7 +38,11 @@ public class GameServer {
         server.bind(54555, 54777); // TODO: magic constants
         server.addListener(new Listener() {
             public void received(Connection connection, Object object) {
-                processRequest(connection, (Request) object);
+                if (object instanceof Request) {
+                    processRequest(connection, (Request) object);
+                } else {
+                    System.out.println("Unknown object received");
+                }
             }
         });
     }
@@ -52,12 +56,10 @@ public class GameServer {
     }
 
     private void leaveRoom(int userId) {
-        System.out.print("User ");
-        System.out.print(userId);
+        System.out.print("User " + userId);
         int ejectRoomId = getRoomId(userId);
         Room ejectRoom = rooms.get(ejectRoomId);
-        System.out.print(" disconnected from room ");
-        System.out.println(ejectRoomId);
+        System.out.println(" disconnected from room " + ejectRoomId);
         if (ejectRoomId != -1) {
             ejectRoom.leave(userId);
             if (ejectRoom.size() == 0) {
@@ -101,7 +103,7 @@ public class GameServer {
             case Disconnect: {
                 leaveRoom(request.userId);
                 users.remove(request.userId);
-                System.out.println("User disconnected");
+                System.out.println("User " + request.userId + " disconnected");
                 break;
             }
         }
