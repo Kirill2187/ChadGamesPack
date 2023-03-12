@@ -11,11 +11,16 @@ public class GameManager extends Game {
 
     private static GameManager instance;
     public Skin skin;
+    public String username;
     public static GameManager getInstance() {
         return instance;
     }
     public GameManager() {
         instance = this;
+        username = generateDefaultUsername();
+    }
+    private String generateDefaultUsername() {
+        return "Chad";
     }
 
     @Override
