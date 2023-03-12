@@ -1,8 +1,14 @@
 package com.chadgames.gamespack.server;
 
+import java.io.IOException;
+
 /** Launches the server application. */
 public class ServerLauncher {
-    public static void main(String[] args) {
-        // TODO Implement server application.
+
+    private static GameServer server;
+
+    public static void main(String[] args) throws IOException {
+        server = new GameServer();
+        System.out.println("Server started successfully");
     }
 }
