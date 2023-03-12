@@ -11,23 +11,23 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.chadgames.gamespack.games.GameGenerator;
+import com.chadgames.gamespack.games.GameProcess;
 import com.chadgames.gamespack.games.GameRenderer;
 import com.chadgames.gamespack.games.GameType;
 
 public class GameScreen implements Screen {
 
-    private GameRenderer gameRenderer;
+    private GameProcess gameProcess;
     private Stage stage;
-    private Viewport viewport;
     private SpriteBatch batch;
+    private Viewport viewport;
 
     public GameScreen(GameType gameType) {
         stage = new Stage();
         batch = new SpriteBatch();
-        gameRenderer = GameGenerator.generateRenderer(gameType, stage, batch);
+        gameProcess = new GameProcess(gameType, stage, batch);
 
-        // TODO: stretch viewport shouldn't be used
-        viewport = new StretchViewport(16, 9); // TODO: remove magic numbers
+        viewport = new ExtendViewport(225, 400); // TODO: remove magic numbers
         stage.setViewport(viewport);
         Gdx.input.setInputProcessor(stage);
     }
@@ -39,9 +39,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(1, 0, 0, 1);
-
-        stage.act(delta);
+        ScreenUtils.clear(0.3f, 0.6f, 0.3f, 1);
+        gameProcess.render(delta);
+        stage.act();
         stage.draw();
     }
 

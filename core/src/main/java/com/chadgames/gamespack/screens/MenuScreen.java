@@ -56,7 +56,7 @@ public class MenuScreen implements Screen {
         testButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameManager.getInstance().launchGame(GameType.TickTackToe);
+                GameManager.getInstance().launchGame(GameType.Chat);
             }
         });
         bottomTable.add(testButton);
@@ -72,7 +72,7 @@ public class MenuScreen implements Screen {
             }
         });
 
-        root.add(bottomTable).fillX().padLeft(10).padRight(10).row();
+        root.add(bottomTable).fillX().padLeft(10).padRight(10).padBottom(5).row();
     }
 
     @Override

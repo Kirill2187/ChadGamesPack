@@ -5,12 +5,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public abstract class GameRenderer {
 
-    private Stage stage;
-    private SpriteBatch batch;
-    public GameRenderer(Stage stage, SpriteBatch batch) {
+    protected Stage stage;
+    protected SpriteBatch batch;
+    protected GameProcess gameProcess;
+    public GameRenderer(GameProcess gameProcess, Stage stage, SpriteBatch batch) {
+        this.gameProcess = gameProcess;
         this.stage = stage;
         this.batch = batch;
     }
 
-    public abstract void render(float delta, GameState gameState);
+    public abstract void render(float delta);
+    public abstract void makeActions(ActionsSequence actionsSequence);
 }

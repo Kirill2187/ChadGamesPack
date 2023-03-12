@@ -9,12 +9,17 @@ public class ChatState implements GameState {
     public ArrayList<String> messages;
 
     @Override
-    public void makeMove(int userId, MoveData moveData) {
-        messages.add('[' + ((Integer)userId).toString() + ']' + ((ChatMoveData)moveData).message);
+    public ChatActionsSequence makeMove(int userId, MoveData moveData) {
+        String message = '[' + ((Integer)userId).toString() + ']' + ((ChatMoveData)moveData).message;
+        messages.add(message);
+
+        ChatActionsSequence actionsSequence = new ChatActionsSequence();
+        actionsSequence.messageToAdd = message;
+        return actionsSequence;
     }
 
     @Override
-    public boolean checkMove() {
+    public boolean checkMove(int userId, MoveData moveData) {
         return true;
     }
 }
