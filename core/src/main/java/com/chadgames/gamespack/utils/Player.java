@@ -1,6 +1,6 @@
 package com.chadgames.gamespack.utils;
 
 public class Player {
-    String nickname;
+    String username;
     public int id;
 }

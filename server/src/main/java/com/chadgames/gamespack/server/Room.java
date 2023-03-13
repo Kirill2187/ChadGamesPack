@@ -3,7 +3,6 @@ package com.chadgames.gamespack.server;
 import com.chadgames.gamespack.games.GameState;
 import com.chadgames.gamespack.games.GameType;
 import com.chadgames.gamespack.games.MoveData;
-import com.chadgames.gamespack.network.User;
 
 import java.util.ArrayList;
 
@@ -19,7 +18,7 @@ public class Room {
 
     public boolean hasUser(int userId) {
         for (User user : users) {
-            if (user.getId() == userId) {
+            if (user.getPlayerId() == userId) {
                 return true;
             }
         }
@@ -28,7 +27,7 @@ public class Room {
 
     public void leave(int userId) {
         for (int i = 0; i < users.size(); ++i) {
-            if (users.get(i).getId() == i) {
+            if (users.get(i).getPlayerId() == i) {
                 users.remove(i);
                 return;
             }

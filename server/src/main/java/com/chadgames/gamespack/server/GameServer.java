@@ -1,8 +1,10 @@
 package com.chadgames.gamespack.server;
 
 import com.chadgames.gamespack.games.GameType;
+import com.chadgames.gamespack.network.Network;
 import com.chadgames.gamespack.network.Request;
-import com.chadgames.gamespack.network.User;
+import com.chadgames.gamespack.network.Response;
+import com.chadgames.gamespack.network.ResponseType;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -12,8 +14,9 @@ import java.util.HashMap;
 
 public class GameServer {
     private Server server;
-    private HashMap<Integer, Room> rooms;
-    private HashMap<Integer, User> users;
+    private HashMap<Integer, Room> rooms = new HashMap<>();
+    private HashMap<Integer, User> users = new HashMap<>();
+    private int curUserId = 0;
 
     private Room getRoom(int userId) {
         for (Room room: rooms.values()) {
@@ -33,13 +36,20 @@ public class GameServer {
     }
 
     GameServer() throws IOException {
-        server = new Server();
+        server = new Server() {
+            @Override
+            protected Connection newConnection() {
+                return new MyConnection();
+            }
+        };
+        Network.registerClasses(server);
+
         server.start();
-        server.bind(54555, 54777); // TODO: magic constants
+        server.bind(Network.PORT); // TODO: magic constants
         server.addListener(new Listener() {
             public void received(Connection connection, Object object) {
                 if (object instanceof Request) {
-                    processRequest(connection, (Request) object);
+                    processRequest((MyConnection) connection, (Request) object);
                 } else {
                     System.out.println("Unknown object received");
                 }
@@ -68,12 +78,15 @@ public class GameServer {
         }
     }
 
-    public void processRequest(Connection connection, Request request) {
+    public void processRequest(MyConnection connection, Request request) {
         // TODO: check if user is valid: id matches with connection, and has access rights
         if (request == null) return;
+        System.out.println("Request received");
         switch (request.requestType) {
             case RegisterUser: {
-                registerUser();
+                String username = (String) request.data;
+                int userId = registerUser(connection, username);
+                System.out.println(String.format("User %s registered, given id=%d", username, userId));
                 break;
             }
             case JoinRoom: {
@@ -109,10 +122,24 @@ public class GameServer {
         }
     }
 
-    private void registerUser() {
-        // TODO: register user
-        int userId = -1;
-        users.put(userId, new User());
+    /* Stores user in a table, sends a response with userId, though it's probably unnecessary */
+    private int registerUser(MyConnection connection, String username) {
+        connection.registered = true;
+        connection.username = username;
+
+        int userId = curUserId++;
+        connection.userId = userId;
+
+        User user = new User(connection);
+        users.put(userId, user);
+
+        Response response = new Response();
+        response.responseType = ResponseType.UserRegistered;
+        response.success = true;
+        response.data = userId; // TODO: Does user really need his id? We can determine him by connection
+        connection.sendTCP(response);
+
+        return userId;
     }
 
     private User getUserById(int userId) {
