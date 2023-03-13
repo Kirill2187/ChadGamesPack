@@ -3,7 +3,10 @@ package com.chadgames.gamespack.server;
 import java.io.IOException;
 
 /** Launches the server application. */
+
+
 public class ServerLauncher {
+
 
     private static GameServer server;
 
@@ -11,4 +14,5 @@ public class ServerLauncher {
         server = new GameServer();
         System.out.println("Server started successfully");
     }
+
 }
