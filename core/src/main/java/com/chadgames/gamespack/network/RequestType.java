@@ -6,5 +6,4 @@ public enum RequestType {
     JoinRoom,
     SendMove,
     LeaveRoom,
-    Disconnect
 }

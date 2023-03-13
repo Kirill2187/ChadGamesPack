@@ -50,11 +50,27 @@ public class GameServer {
         server.start();
         server.bind(Network.PORT); // TODO: magic constants
         server.addListener(new Listener() {
+            @Override
+            public void disconnected(Connection connection) {
+                if (!(connection instanceof MyConnection)) return;
+                MyConnection myConnection = (MyConnection) connection;
+                if (!myConnection.registered) return;
+
+                leaveRoom(myConnection.userId);
+                users.remove(myConnection.userId);
+                System.out.println("User " + myConnection.userId + " disconnected");
+            }
+
             public void received(Connection connection, Object object) {
                 if (object instanceof Request) {
                     processRequest((MyConnection) connection, (Request) object);
                 } else {
-                    System.out.println("Unknown object received");
+                     System.out.print("Unknown object received ");
+                     if (connection instanceof MyConnection) {
+                         System.out.println("from " + ((MyConnection) connection).username);
+                     } else {
+                         System.out.println("from unregistered user");
+                     }
                 }
             }
         });
@@ -76,11 +92,10 @@ public class GameServer {
     }
 
     private void leaveRoom(int userId) {
-        System.out.print("User " + userId);
         int ejectRoomId = getRoomId(userId);
-        Room ejectRoom = rooms.get(ejectRoomId);
-        System.out.println(" disconnected from room " + ejectRoomId);
         if (ejectRoomId != -1) {
+            System.out.println("User " + userId + " disconnected from room " + ejectRoomId);
+            Room ejectRoom = rooms.get(ejectRoomId);
             ejectRoom.leave(userId);
             if (ejectRoom.size() == 0) {
                 deleteRoom(ejectRoomId);
@@ -134,12 +149,6 @@ public class GameServer {
             }
             case LeaveRoom: {
                 leaveRoom(request.userId);
-                break;
-            }
-            case Disconnect: {
-                leaveRoom(request.userId);
-                users.remove(request.userId);
-                System.out.println("User " + request.userId + " disconnected");
                 break;
             }
         }
