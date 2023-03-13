@@ -3,7 +3,6 @@ package com.chadgames.gamespack.server;
 import com.chadgames.gamespack.utils.Player;
 
 public class User {
-    // TODO: IP Address
     Player player;
     MyConnection connection;
 

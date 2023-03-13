@@ -48,7 +48,7 @@ public class GameServer {
         Network.registerClasses(server);
 
         server.start();
-        server.bind(Network.PORT); // TODO: magic constants
+        server.bind(Network.PORT);
         server.addListener(new Listener() {
             @Override
             public void disconnected(Connection connection) {
