@@ -11,6 +11,7 @@ import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Random;
 
 public class GameServer {
     private Server server;
@@ -18,17 +19,19 @@ public class GameServer {
     private HashMap<Integer, User> users = new HashMap<>();
     private int curUserId = 0;
 
-    private Room getRoom(int userId) {
-        for (Room room: rooms.values()) {
-            if (room.hasUser(userId)) {
-                return room;
+    private int getRoomId(int userId) {
+        for (int key : rooms.keySet()) {
+            if (rooms.get(key).hasUser(userId)) {
+                return key;
             }
         }
-        return null;
+        return -1;
     }
-    private int getRoomId(int userId) {
-        for (int key: rooms.keySet()) {
-            if (rooms.get(key).hasUser(userId)) {
+
+    private int getAccessibleRoomIdByType(GameType gameType) {
+        for (int key : rooms.keySet()) {
+            Room cur = rooms.get(key);
+            if (cur.getGameType() == gameType && !cur.full() && !cur.isActive()) {
                 return key;
             }
         }
@@ -57,12 +60,19 @@ public class GameServer {
         });
     }
 
-    private int createRoom(GameType gameType) {
-        return -1; // TODO: create room
+    private int createRoom(GameType gameType, int maxMembers) {
+        Random rand = new Random();
+        int roomId = rand.nextInt();
+        rooms.put(roomId, new Room(gameType, maxMembers));
+        return roomId;
     }
 
     private void deleteRoom(int roomId) {
         rooms.remove(roomId);
+    }
+
+    private void joinRoom(int roomId, User user) {
+        rooms.get(roomId).join(user);
     }
 
     private void leaveRoom(int userId) {
@@ -90,15 +100,28 @@ public class GameServer {
                 break;
             }
             case JoinRoom: {
-                int roomId = (int)request.data; // TODO: allow to enter any free room
-                if (rooms.containsKey(roomId)) {
-                    rooms.get(roomId).join(getUserById(request.userId));
+                if (request.data instanceof GameType) {
+                    int accessibleRoomId = getAccessibleRoomIdByType((GameType) request.data);
+                    if (accessibleRoomId != -1) {
+                        joinRoom(accessibleRoomId, getUserById(request.userId));
+                        // TODO: response: OK, accessibleRoomId
+                    } else {
+                        // TODO: response: FAIL
+                    }
+                } else {
+                    int roomId = (int) request.data;
+                    if (rooms.containsKey(roomId)) {
+                        joinRoom(roomId, getUserById(request.userId));
+                    }
+                    // TODO: response: OK/Failure
                 }
+                // TODO: also should send full room state
                 break;
             }
             case CreateRoom: {
-                int newRoom = createRoom((GameType) request.data);
+                int newRoom = createRoom((GameType) request.data, 4); // TODO: somehow receive maxMembers
                 rooms.get(newRoom).join(getUserById(request.userId));
+                // TODO: response success
                 break;
             }
             case SendMove: {

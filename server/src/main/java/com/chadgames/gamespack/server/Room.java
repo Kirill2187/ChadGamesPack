@@ -11,9 +11,15 @@ public class Room {
     private ArrayList<User> users;
     private boolean isActive;
     private GameState gameState;
+    private final int maxMembers;
 
     public ArrayList<User> getUsers() {
         return users;
+    }
+
+    public Room(GameType type, int max) {
+        gameType = type;
+        maxMembers = max;
     }
 
     public boolean hasUser(int userId) {
@@ -44,5 +50,25 @@ public class Room {
 
     public void makeMove(int userId, Object data) {
         gameState.makeMove(userId, (MoveData)data);
+    }
+
+    public GameType getGameType() {
+        return gameType;
+    }
+
+    public void setGameType(GameType gameType) {
+        this.gameType = gameType;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public boolean full() {
+        return users.size() < maxMembers;
     }
 }
