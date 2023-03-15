@@ -3,6 +3,7 @@ package com.chadgames.gamespack.server;
 import com.chadgames.gamespack.games.GameType;
 import com.chadgames.gamespack.network.Network;
 import com.chadgames.gamespack.network.Request;
+import com.chadgames.gamespack.network.RequestType;
 import com.chadgames.gamespack.network.Response;
 import com.chadgames.gamespack.network.ResponseType;
 import com.esotericsoftware.kryonet.Connection;
@@ -18,6 +19,7 @@ public class GameServer {
     private HashMap<Integer, Room> rooms = new HashMap<>();
     private HashMap<Integer, User> users = new HashMap<>();
     private int curUserId = 0;
+    private int curRoomId = 0;
 
     private int getRoomId(int userId) {
         for (int key : rooms.keySet()) {
@@ -56,7 +58,7 @@ public class GameServer {
                 MyConnection myConnection = (MyConnection) connection;
                 if (!myConnection.registered) return;
 
-                leaveRoom(myConnection.userId);
+                leaveRoom(getUserById(myConnection.userId));
                 users.remove(myConnection.userId);
                 System.out.println("User " + myConnection.userId + " disconnected");
             }
@@ -77,8 +79,7 @@ public class GameServer {
     }
 
     private int createRoom(GameType gameType, int maxMembers) {
-        Random rand = new Random();
-        int roomId = rand.nextInt();
+        int roomId = curRoomId++;
         rooms.put(roomId, new Room(gameType, maxMembers));
         return roomId;
     }
@@ -89,12 +90,17 @@ public class GameServer {
 
     private void joinRoom(int roomId, User user) {
         rooms.get(roomId).join(user);
+        System.out.println("User " + user.getUsername() + " joined room " + roomId);
+
+        // TODO: notify everyone in the room, that user joined
+        // TODO: notify user, that he joined the room, and send him room data
     }
 
-    private void leaveRoom(int userId) {
+    private void leaveRoom(User user) {
+        int userId = user.getUserId();
         int ejectRoomId = getRoomId(userId);
         if (ejectRoomId != -1) {
-            System.out.println("User " + userId + " disconnected from room " + ejectRoomId);
+            System.out.println("User " + user.getUsername() + " disconnected from room " + ejectRoomId);
             Room ejectRoom = rooms.get(ejectRoomId);
             ejectRoom.leave(userId);
             if (ejectRoom.size() == 0) {
@@ -104,8 +110,12 @@ public class GameServer {
     }
 
     public void processRequest(MyConnection connection, Request request) {
-        // TODO: check if user is valid: id matches with connection, and has access rights
         if (request == null) return;
+        if (!connection.registered && request.requestType != RequestType.RegisterUser) {
+            System.out.println("Unregistered user tried to send request");
+            return;
+        }
+
         System.out.println("Request received");
         switch (request.requestType) {
             case RegisterUser: {
@@ -115,40 +125,44 @@ public class GameServer {
                 break;
             }
             case JoinRoom: {
+                int userId = connection.userId;
+                User user = getUserById(userId);
                 if (request.data instanceof GameType) {
-                    int accessibleRoomId = getAccessibleRoomIdByType((GameType) request.data);
-                    if (accessibleRoomId != -1) {
-                        joinRoom(accessibleRoomId, getUserById(request.userId));
-                        // TODO: response: OK, accessibleRoomId
-                    } else {
-                        // TODO: response: FAIL
-                    }
+                    GameType gameType = (GameType) request.data;
+                    joinSomeRoom(gameType, user);
                 } else {
                     int roomId = (int) request.data;
                     if (rooms.containsKey(roomId)) {
-                        joinRoom(roomId, getUserById(request.userId));
+                        joinRoom(roomId, user);
+                    } else {
+                        // TODO: send failure response
                     }
-                    // TODO: response: OK/Failure
                 }
-                // TODO: also should send full room state
                 break;
             }
             case CreateRoom: {
                 int newRoom = createRoom((GameType) request.data, 4); // TODO: somehow receive maxMembers
-                rooms.get(newRoom).join(getUserById(request.userId));
+                rooms.get(newRoom).join(getUserById(connection.userId));
                 // TODO: response success
                 break;
             }
             case SendMove: {
-                int roomId = getRoomId(request.userId);
+                int roomId = getRoomId(connection.userId);
+                boolean success = false;
                 if (roomId != -1) {
-                    rooms.get(roomId).makeMove(request.userId, request.data);
+                    success = rooms.get(roomId).makeMove(connection.userId, request.data);
                 }
-                // TODO: broadcast changes
+                if (success) {
+                    rooms.get(roomId).sendToAllExcept(
+                        new Response(true, ResponseType.FetchMove, request.data),
+                        connection.userId
+                    );
+                }
+                // TODO fetch state if not successful
                 break;
             }
             case LeaveRoom: {
-                leaveRoom(request.userId);
+                leaveRoom(getUserById(connection.userId));
                 break;
             }
         }
@@ -172,6 +186,19 @@ public class GameServer {
         connection.sendTCP(response);
 
         return userId;
+    }
+
+    private int joinSomeRoom(GameType gameType, User user) {
+        int roomId = getAccessibleRoomIdByType(gameType);
+
+        if (roomId != -1) {
+            joinRoom(roomId, user);
+        } else {
+            roomId = createRoom(gameType, 4); // TODO: somehow receive maxMembers
+            joinRoom(roomId, user);
+        }
+
+        return roomId;
     }
 
     private User getUserById(int userId) {

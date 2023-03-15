@@ -1,14 +1,16 @@
 package com.chadgames.gamespack.server;
 
+import com.chadgames.gamespack.games.GameGenerator;
 import com.chadgames.gamespack.games.GameState;
 import com.chadgames.gamespack.games.GameType;
 import com.chadgames.gamespack.games.MoveData;
+import com.chadgames.gamespack.network.Response;
 
 import java.util.ArrayList;
 
 public class Room {
     private GameType gameType;
-    private ArrayList<User> users;
+    private ArrayList<User> users = new ArrayList<>();
     private boolean isActive;
     private GameState gameState;
     private final int maxMembers;
@@ -20,11 +22,12 @@ public class Room {
     public Room(GameType type, int max) {
         gameType = type;
         maxMembers = max;
+        gameState = GameGenerator.generateState(gameType);
     }
 
     public boolean hasUser(int userId) {
         for (User user : users) {
-            if (user.getPlayerId() == userId) {
+            if (user.getUserId() == userId) {
                 return true;
             }
         }
@@ -33,7 +36,7 @@ public class Room {
 
     public void leave(int userId) {
         for (int i = 0; i < users.size(); ++i) {
-            if (users.get(i).getPlayerId() == i) {
+            if (users.get(i).getUserId() == userId) {
                 users.remove(i);
                 return;
             }
@@ -48,8 +51,10 @@ public class Room {
         users.add(user);
     }
 
-    public void makeMove(int userId, Object data) {
-        gameState.makeMove(userId, (MoveData)data);
+    public boolean makeMove(int userId, Object data) {
+        if (!gameState.checkMove(userId, (MoveData) data)) return false;
+        gameState.makeMove(userId, (MoveData) data);
+        return true;
     }
 
     public GameType getGameType() {
@@ -69,6 +74,18 @@ public class Room {
     }
 
     public boolean full() {
-        return users.size() < maxMembers;
+        return users.size() >= maxMembers;
+    }
+
+    public void sendToAll(Response response) {
+        sendToAllExcept(response, -1);
+    }
+
+    public void sendToAllExcept(Response response, int userId) {
+        for (User user : users) {
+            if (user.getUserId() != userId) {
+                user.getConnection().sendTCP(response);
+            }
+        }
     }
 }

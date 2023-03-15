@@ -39,11 +39,12 @@ public class GameManager extends Game {
     @Override
     public void create() {
         skin = new Skin(Gdx.files.internal("ui/skin/flat-earth-ui.json")); // TODO: replace with custom skin
-        new Thread(this::connect).start();
+        asyncConnect();
         setScreen(new MenuScreen());
     }
 
     public void launchGame(GameType gameType) {
+        client.sendTCP(new Request(RequestType.JoinRoom, gameType));
         setScreen(new GameScreen(gameType));
     }
 
@@ -73,5 +74,9 @@ public class GameManager extends Game {
 
     public boolean isConnected() {
         return client.isConnected();
+    }
+
+    public void asyncConnect() {
+        new Thread(this::connect).start();
     }
 }

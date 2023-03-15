@@ -14,4 +14,8 @@ public class User {
     public int getPlayerId() { return player.id; }
     public int getUserId() { return connection.userId; }
     public MyConnection getConnection() { return connection; }
+
+    public String getUsername() {
+        return connection.username;
+    }
 }
