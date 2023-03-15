@@ -6,11 +6,11 @@ import com.chadgames.gamespack.games.MoveData;
 import java.util.ArrayList;
 
 public class ChatState implements GameState {
-    public ArrayList<String> messages;
+    public ArrayList<String> messages = new ArrayList<>();
 
     @Override
     public ChatActionsSequence makeMove(int userId, MoveData moveData) {
-        String message = '[' + ((Integer)userId).toString() + ']' + ((ChatMoveData)moveData).message;
+        String message = ((ChatMoveData)moveData).message;
         messages.add(message);
 
         ChatActionsSequence actionsSequence = new ChatActionsSequence();
