@@ -2,6 +2,7 @@ package com.chadgames.gamespack.games.chat;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,7 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.chadgames.gamespack.GameManager;
@@ -35,19 +38,25 @@ public class ChatRenderer extends GameRenderer {
 
     private void createUI() {
         Skin skin = GameManager.getInstance().skin;
+
         Table root = new Table();
         root.debugAll();
         root.setFillParent(true);
         stage.addActor(root);
         root.top();
 
-        TextField testTextField = new TextField("Enter message", skin);
-        root.add(testTextField).expandX().row();
+        Table messages = new Table();
+        messages.top();
+        root.add(messages).grow().padTop(5).row();
 
         Table bottomTable = new Table();
+        root.add(bottomTable).fillX().padLeft(10).padRight(10);
 
-        TextButton testButton = new TextButton("SendMessage", skin);
-        testButton.addListener(new ClickListener() {
+        TextField testTextField = new TextField("", skin);
+        bottomTable.add(testTextField).padRight(5).growX().minWidth(100);
+
+        TextButton sendButton = new TextButton("Send", skin);
+        sendButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ChatMoveData textSent = new ChatMoveData();
@@ -55,14 +64,12 @@ public class ChatRenderer extends GameRenderer {
                 gameProcess.sendMoveToServer(0, textSent);
             }
         });
-        bottomTable.add(testButton);
+        bottomTable.add(sendButton);
 
-        receivedMessages = new Label("", skin, "title");
-        root.add(receivedMessages).expandX().row();
-
-        bottomTable.add(new Table()).expandX().fillX();
-
-        root.add(bottomTable).fillX().padLeft(10).padRight(10).padBottom(5).row();
+        receivedMessages = new Label("", skin, "default");
+        receivedMessages.setAlignment(Align.top);
+        receivedMessages.setColor(Color.PURPLE);
+        messages.add(receivedMessages).grow();
     }
 
     @Override
