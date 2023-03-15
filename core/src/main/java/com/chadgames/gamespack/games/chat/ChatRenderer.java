@@ -61,7 +61,7 @@ public class ChatRenderer extends GameRenderer {
             public void clicked(InputEvent event, float x, float y) {
                 ChatMoveData textSent = new ChatMoveData();
                 textSent.message = testTextField.getText();
-                gameProcess.sendMoveToServer(0, textSent);
+                gameProcess.makeMoveAndSendToServer(0, textSent);
             }
         });
         bottomTable.add(sendButton);
