@@ -44,7 +44,6 @@ public class GameManager extends Game {
     }
 
     public void launchGame(GameType gameType) {
-        client.sendTCP(new Request(RequestType.JoinRoom, gameType));
         setScreen(new GameScreen(gameType));
     }
 

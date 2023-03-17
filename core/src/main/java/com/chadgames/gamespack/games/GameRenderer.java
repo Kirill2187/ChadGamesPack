@@ -17,4 +17,5 @@ public abstract class GameRenderer {
 
     public abstract void render(float delta);
     public abstract void makeActions(ActionsSequence actionsSequence);
+    public abstract void loadFromState(GameState gameState);
 }

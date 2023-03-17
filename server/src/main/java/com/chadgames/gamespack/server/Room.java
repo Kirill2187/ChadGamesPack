@@ -5,6 +5,7 @@ import com.chadgames.gamespack.games.GameState;
 import com.chadgames.gamespack.games.GameType;
 import com.chadgames.gamespack.games.MoveData;
 import com.chadgames.gamespack.network.Response;
+import com.chadgames.gamespack.utils.Player;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,7 @@ public class Room {
     private boolean isActive;
     private GameState gameState;
     private final int maxMembers;
+    private int curPlayerId = 0;
 
     public ArrayList<User> getUsers() {
         return users;
@@ -37,7 +39,12 @@ public class Room {
     public void leave(int userId) {
         for (int i = 0; i < users.size(); ++i) {
             if (users.get(i).getUserId() == userId) {
+                User user = users.get(i);
                 users.remove(i);
+
+                gameState.removePlayer(user.getPlayerId());
+                gameState.playerLeft(user.player);
+
                 return;
             }
         }
@@ -49,6 +56,13 @@ public class Room {
 
     public void join(User user) {
         users.add(user);
+
+        user.player = new Player();
+        user.player.id = curPlayerId++;
+        user.player.username = user.getUsername();
+
+        gameState.addPlayer(user.player);
+        gameState.playerJoined(user.player);
     }
 
     public boolean makeMove(MoveData data) {
@@ -87,5 +101,9 @@ public class Room {
                 user.getConnection().sendTCP(response);
             }
         }
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 }

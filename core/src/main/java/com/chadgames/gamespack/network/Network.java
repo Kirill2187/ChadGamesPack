@@ -2,8 +2,13 @@ package com.chadgames.gamespack.network;
 
 import com.chadgames.gamespack.games.GameType;
 import com.chadgames.gamespack.games.chat.ChatMoveData;
+import com.chadgames.gamespack.games.chat.ChatState;
+import com.chadgames.gamespack.utils.Player;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public final class Network {
 
@@ -18,8 +23,13 @@ public final class Network {
         kryo.register(RequestType.class);
         kryo.register(ResponseType.class);
         kryo.register(GameType.class);
+        kryo.register(Player.class);
+        kryo.register(ArrayList.class);
+        kryo.register(HashMap.class);
 
         kryo.register(ChatMoveData.class);
+        kryo.register(ChatState.class);
+
     }
 
 }

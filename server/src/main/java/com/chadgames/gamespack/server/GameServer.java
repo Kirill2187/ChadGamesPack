@@ -83,11 +83,24 @@ public class GameServer {
     }
 
     private void joinRoom(int roomId, User user) {
-        rooms.get(roomId).join(user);
-        System.out.println("User " + user.getUsername() + " joined room " + roomId);
+        Room room = rooms.get(roomId);
+        room.join(user); // After this call user.player must be initialized and assigned an id
+        assert user.player != null;
 
-        // TODO: notify everyone in the room, that user joined
-        // TODO: notify user, that he joined the room, and send him room data
+        System.out.println("User " + user.getUsername() + " joined room " + roomId);
+        System.out.println("User " + user.getUsername() + " assigned id " + user.player.id);
+
+        user.getConnection().sendTCP(
+            new Response(true, ResponseType.PlayerIdAssigned, user.player.id)
+        );
+        user.getConnection().sendTCP(
+            new Response(true, ResponseType.FetchGameState, room.getGameState())
+        );
+        // We do not need to send "user joined" message to the user who joined,
+        // because updates are already fetched in the previous line
+        room.sendToAllExcept(
+            new Response(true, ResponseType.UserJoined, user.player), user.getUserId()
+        );
     }
 
     private void leaveRoom(User user) {
@@ -95,8 +108,13 @@ public class GameServer {
         int ejectRoomId = getRoomId(userId);
         if (ejectRoomId != -1) {
             System.out.println("User " + user.getUsername() + " disconnected from room " + ejectRoomId);
+
             Room ejectRoom = rooms.get(ejectRoomId);
             ejectRoom.leave(userId);
+            ejectRoom.sendToAll(
+                new Response(true, ResponseType.UserLeft, user.player)
+            );
+
             if (ejectRoom.size() == 0) {
                 deleteRoom(ejectRoomId);
             }
@@ -150,8 +168,11 @@ public class GameServer {
                         new Response(true, ResponseType.FetchMove, request.data),
                         connection.userId
                     );
+                } else {
+                    connection.sendTCP(
+                        new Response(false, ResponseType.FetchGameState, rooms.get(roomId).getGameState())
+                    );
                 }
-                // TODO fetch state if not successful
                 break;
             }
             case LeaveRoom: {
@@ -171,12 +192,6 @@ public class GameServer {
 
         User user = new User(connection);
         users.put(userId, user);
-
-        Response response = new Response();
-        response.responseType = ResponseType.UserRegistered;
-        response.success = true;
-        response.data = userId; // TODO: Does user really need his id? We can determine him by connection
-        connection.sendTCP(response);
 
         return userId;
     }

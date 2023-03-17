@@ -1,5 +1,5 @@
 package com.chadgames.gamespack.games;
 
-public interface MoveData {
-    int playerId = 0;
+public abstract class MoveData {
+    public int playerId = 0;
 }

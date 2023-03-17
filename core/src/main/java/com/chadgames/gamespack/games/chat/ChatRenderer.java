@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -47,7 +48,7 @@ public class ChatRenderer extends GameRenderer {
 
         Table messages = new Table();
         messages.top();
-        root.add(messages).grow().padTop(5).row();
+        root.add(messages).grow().padTop(5).padLeft(5).padRight(5).row();
 
         Table bottomTable = new Table();
         root.add(bottomTable).fillX().padLeft(10).padRight(10);
@@ -61,15 +62,27 @@ public class ChatRenderer extends GameRenderer {
             public void clicked(InputEvent event, float x, float y) {
                 ChatMoveData textSent = new ChatMoveData();
                 textSent.message = testTextField.getText();
+                textSent.playerId = gameProcess.getMyPlayerId();
                 gameProcess.makeMoveAndSendToServer(textSent);
             }
         });
         bottomTable.add(sendButton);
 
         receivedMessages = new Label("", skin, "default");
-        receivedMessages.setAlignment(Align.top);
+        receivedMessages.setAlignment(Align.top | Align.left);
         receivedMessages.setColor(Color.PURPLE);
-        messages.add(receivedMessages).grow();
+
+        ScrollPane scrollPane = new ScrollPane(receivedMessages, skin);
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.setFlickScroll(true);
+        scrollPane.setScrollingDisabled(true, false);
+        scrollPane.setOverscroll(false, true);
+        scrollPane.setForceScroll(false, true);
+        scrollPane.setSmoothScrolling(true);
+        scrollPane.setVariableSizeKnobs(false);
+
+        messages.add(scrollPane).grow().padTop(5).padLeft(5).padRight(5).row();
+
     }
 
     @Override
@@ -80,7 +93,16 @@ public class ChatRenderer extends GameRenderer {
     @Override
     public void makeActions(ActionsSequence actionsSequence) {
         String current_message = ((ChatActionsSequence) actionsSequence).messageToAdd;
-        Gdx.app.log("debug", "New message: " + current_message);
         receivedMessages.setText(receivedMessages.getText() + "\n" + current_message);
+    }
+
+    @Override
+    public void loadFromState(GameState gameState) {
+        receivedMessages.clear();
+        StringBuilder messages = new StringBuilder();
+        for (String message : ((ChatState) gameState).messages) {
+            messages.append(message).append("\n");
+        }
+        receivedMessages.setText(messages.toString());
     }
 }

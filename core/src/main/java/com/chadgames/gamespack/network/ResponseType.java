@@ -6,5 +6,7 @@ public enum ResponseType {
     FetchMove,
     GameStarted,
     GameFinished,
-    UserJoined
+    UserJoined,
+    UserLeft,
+    PlayerIdAssigned,
 }
