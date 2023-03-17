@@ -26,8 +26,6 @@ public class GameProcess {
             public void received(Connection connection, Object object) {
                 if (object instanceof Response) {
                     processResponse((Response) object);
-                } else {
-                    System.out.print("Unknown object received ");
                 }
             }
         };

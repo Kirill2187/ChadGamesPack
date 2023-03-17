@@ -67,13 +67,6 @@ public class GameServer {
             public void received(Connection connection, Object object) {
                 if (object instanceof Request) {
                     processRequest((MyConnection) connection, (Request) object);
-                } else {
-                     System.out.print("Unknown object received ");
-                     if (connection instanceof MyConnection) {
-                         System.out.println("from " + ((MyConnection) connection).username);
-                     } else {
-                         System.out.println("from unregistered user");
-                     }
                 }
             }
         });
@@ -117,7 +110,6 @@ public class GameServer {
             return;
         }
 
-        System.out.println("Request received");
         switch (request.requestType) {
             case RegisterUser: {
                 String username = (String) request.data;
