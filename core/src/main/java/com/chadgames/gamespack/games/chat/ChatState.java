@@ -4,13 +4,14 @@ import com.chadgames.gamespack.games.GameState;
 import com.chadgames.gamespack.games.MoveData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ChatState implements GameState {
-    public ArrayList<String> messages = new ArrayList<>();
+    private ArrayList<String> messages = new ArrayList<>();
 
     @Override
-    public ChatActionsSequence makeMove(int userId, MoveData moveData) {
-        String message = ((ChatMoveData)moveData).message;
+    public ChatActionsSequence makeMove(MoveData moveData) {
+        String message = "[" + ((ChatMoveData) moveData).playerId + "] " + ((ChatMoveData) moveData).message;
         messages.add(message);
 
         ChatActionsSequence actionsSequence = new ChatActionsSequence();
@@ -19,7 +20,7 @@ public class ChatState implements GameState {
     }
 
     @Override
-    public boolean checkMove(int userId, MoveData moveData) {
-        return true;
+    public boolean checkMove(MoveData moveData) {
+        return !((ChatMoveData) moveData).message.trim().equals("");
     }
 }

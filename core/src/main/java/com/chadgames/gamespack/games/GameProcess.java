@@ -37,7 +37,7 @@ public class GameProcess {
     public void processResponse(Response response) {
         switch (response.responseType) {
             case FetchMove: {
-                makeMove(0, (MoveData) response.data); // TODO make something with userId
+                makeMove((MoveData) response.data); // TODO make something with userId
                 break;
             }
         }
@@ -47,13 +47,14 @@ public class GameProcess {
         gameRenderer.render(delta);
     }
 
-    public void makeMove(int userId, MoveData moveData) {
-        if (!gameState.checkMove(userId, moveData)) return;
-        ActionsSequence sequence = gameState.makeMove(userId, moveData);
+    public boolean makeMove(MoveData moveData) {
+        if (!gameState.checkMove(moveData)) return false;
+        ActionsSequence sequence = gameState.makeMove(moveData);
         gameRenderer.makeActions(sequence);
+        return true;
     }
 
-    public void sendMoveToServer(int userId, MoveData moveData) {
+    public void sendMoveToServer(MoveData moveData) {
         Request request = new Request();
         request.requestType = RequestType.SendMove;
         request.data = moveData;
@@ -61,9 +62,10 @@ public class GameProcess {
     }
 
     /* When renderer receives user input, move should be also sent to server */
-    public void makeMoveAndSendToServer(int userId, MoveData moveData) {
-        makeMove(userId, moveData);
-        sendMoveToServer(userId, moveData);
+    public void makeMoveAndSendToServer(MoveData moveData) {
+        boolean checkMoveSuccess = makeMove(moveData);
+        if (!checkMoveSuccess) return;
+        sendMoveToServer(moveData);
     }
 
     public void removeListener() {

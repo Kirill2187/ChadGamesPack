@@ -51,9 +51,9 @@ public class Room {
         users.add(user);
     }
 
-    public boolean makeMove(int userId, Object data) {
-        if (!gameState.checkMove(userId, (MoveData) data)) return false;
-        gameState.makeMove(userId, (MoveData) data);
+    public boolean makeMove(MoveData data) {
+        if (!gameState.checkMove(data)) return false;
+        gameState.makeMove(data);
         return true;
     }
 

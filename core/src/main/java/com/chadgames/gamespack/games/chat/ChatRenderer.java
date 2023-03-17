@@ -61,7 +61,7 @@ public class ChatRenderer extends GameRenderer {
             public void clicked(InputEvent event, float x, float y) {
                 ChatMoveData textSent = new ChatMoveData();
                 textSent.message = testTextField.getText();
-                gameProcess.makeMoveAndSendToServer(0, textSent);
+                gameProcess.makeMoveAndSendToServer(textSent);
             }
         });
         bottomTable.add(sendButton);
@@ -79,7 +79,7 @@ public class ChatRenderer extends GameRenderer {
 
     @Override
     public void makeActions(ActionsSequence actionsSequence) {
-        String current_message = ((ChatActionsSequence)actionsSequence).messageToAdd;
+        String current_message = ((ChatActionsSequence) actionsSequence).messageToAdd;
         Gdx.app.log("debug", "New message: " + current_message);
         receivedMessages.setText(receivedMessages.getText() + "\n" + current_message);
     }

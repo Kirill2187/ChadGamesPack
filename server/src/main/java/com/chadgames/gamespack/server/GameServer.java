@@ -1,6 +1,7 @@
 package com.chadgames.gamespack.server;
 
 import com.chadgames.gamespack.games.GameType;
+import com.chadgames.gamespack.games.MoveData;
 import com.chadgames.gamespack.network.Network;
 import com.chadgames.gamespack.network.Request;
 import com.chadgames.gamespack.network.RequestType;
@@ -150,7 +151,7 @@ public class GameServer {
                 int roomId = getRoomId(connection.userId);
                 boolean success = false;
                 if (roomId != -1) {
-                    success = rooms.get(roomId).makeMove(connection.userId, request.data);
+                    success = rooms.get(roomId).makeMove((MoveData) request.data);
                 }
                 if (success) {
                     rooms.get(roomId).sendToAllExcept(
