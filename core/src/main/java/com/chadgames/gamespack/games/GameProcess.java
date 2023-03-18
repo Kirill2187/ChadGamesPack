@@ -77,7 +77,7 @@ public class GameProcess {
     }
 
     public boolean makeMove(MoveData moveData) {
-        if (!gameState.gameStarted) return false;
+        if (!gameState.isGameStarted()) return false;
         if (!gameState.checkMove(moveData)) return false;
         ActionsSequence sequence = gameState.makeMove(moveData);
         gameRenderer.makeActions(sequence);
