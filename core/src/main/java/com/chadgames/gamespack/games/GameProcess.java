@@ -2,11 +2,16 @@ package com.chadgames.gamespack.games;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.chadgames.gamespack.GameManager;
 import com.chadgames.gamespack.network.Request;
 import com.chadgames.gamespack.network.RequestType;
 import com.chadgames.gamespack.network.Response;
+import com.chadgames.gamespack.ui.WaitWindow;
 import com.chadgames.gamespack.utils.Constants;
 import com.chadgames.gamespack.utils.Player;
 import com.esotericsoftware.kryonet.Client;
@@ -16,15 +21,34 @@ import com.esotericsoftware.kryonet.Listener;
 public class GameProcess {
 
     private GameRenderer gameRenderer;
+    private Table windowTable;
+    private WaitWindow waitWindow;
     private GameState gameState;
+    private GameType gameType;
     private Listener listener;
     private int myPlayerId;
 
     public GameProcess(GameType gameType, Stage stage, SpriteBatch batch) {
+        this.gameType = gameType;
         GameFactory gameFactory = Constants.GAME_FACTORIES.get(gameType);
 
         this.gameState = gameFactory.createState();
         this.gameRenderer = gameFactory.createRenderer(this, stage, batch);
+
+        windowTable = new Table();
+        windowTable.setFillParent(true);
+        stage.addActor(windowTable);
+
+        waitWindow = new WaitWindow("Waiting for players...", new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                tryStartGame();
+            }
+        });
+        waitWindow.setMovable(false);
+        windowTable.add(waitWindow).minSize(200);
+        updatePlayerCounter();
+
         listener = new Listener() {
             @Override
             public void received(Connection connection, Object object) {
@@ -46,22 +70,27 @@ public class GameProcess {
             }
             case UserJoined: {
                 playerJoined((Player) response.data);
+                if (!gameState.isGameStarted()) updatePlayerCounter();
                 Gdx.app.log("debug", "Player joined");
                 break;
             }
             case UserLeft: {
                 playerLeft((Player) response.data);
+                if (!gameState.isGameStarted()) updatePlayerCounter();
                 break;
             }
             case GameStarted: {
                 if (response.success) {
                     fetchGameState((GameState) response.data);
+                    windowTable.setVisible(false);
+                    Gdx.app.log("debug", "Game started");
                 }
                 break;
             }
             case FetchGameState: {
                 Gdx.app.log("debug", "Received game state");
                 fetchGameState((GameState) response.data);
+                if (!gameState.isGameStarted()) updatePlayerCounter();
                 break;
             }
             case PlayerIdAssigned: {
@@ -112,6 +141,20 @@ public class GameProcess {
         this.gameState = gameState; // TODO: not safe
         gameRenderer.loadFromState(gameState);
     }
+
+    public void tryStartGame() {
+        Request request = new Request();
+        request.requestType = RequestType.StartGame;
+        GameManager.getInstance().client.sendTCP(request);
+    }
+
+    public void updatePlayerCounter() {
+        int maxPlayers = Constants.autostartPlayersInRoom.get(gameType);
+        int currentPlayers = gameState.players.size();
+        boolean allowedToStart = currentPlayers >= Constants.minPlayersInRoom.get(gameType);
+        waitWindow.setPlayerCount(currentPlayers, maxPlayers, allowedToStart);
+    }
+
     public void dispose() {
         GameManager.getInstance().client.removeListener(listener);
     }
