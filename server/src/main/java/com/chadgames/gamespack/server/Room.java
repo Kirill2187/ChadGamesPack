@@ -14,6 +14,7 @@ public class Room {
     private ArrayList<User> users = new ArrayList<>();
     private boolean isActive;
     private GameState gameState;
+    private final int minMembers;
     private final int maxMembers;
     private int curPlayerId = 0;
 
@@ -21,8 +22,9 @@ public class Room {
         return users;
     }
 
-    public Room(GameType type, int max) {
+    public Room(GameType type, int min, int max) {
         gameType = type;
+        minMembers = min;
         maxMembers = max;
         gameState = GameGenerator.generateState(gameType);
     }

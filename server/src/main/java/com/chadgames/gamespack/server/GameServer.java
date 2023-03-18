@@ -7,6 +7,7 @@ import com.chadgames.gamespack.network.Request;
 import com.chadgames.gamespack.network.RequestType;
 import com.chadgames.gamespack.network.Response;
 import com.chadgames.gamespack.network.ResponseType;
+import com.chadgames.gamespack.utils.Constants;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -72,9 +73,9 @@ public class GameServer {
         });
     }
 
-    private int createRoom(GameType gameType, int maxMembers) {
+    private int createRoom(GameType gameType) {
         int roomId = curRoomId++;
-        rooms.put(roomId, new Room(gameType, maxMembers));
+        rooms.put(roomId, new Room(gameType, Constants.minPlayersInRoom.get(gameType), Constants.maxPlayersInRoom.get(gameType)));
         return roomId;
     }
 
@@ -152,7 +153,7 @@ public class GameServer {
                 break;
             }
             case CreateRoom: {
-                int newRoom = createRoom((GameType) request.data, 4); // TODO: somehow receive maxMembers
+                int newRoom = createRoom((GameType) request.data); // TODO: somehow receive maxMembers
                 rooms.get(newRoom).join(getUserById(connection.userId));
                 // TODO: response success
                 break;
@@ -199,12 +200,10 @@ public class GameServer {
     private int joinSomeRoom(GameType gameType, User user) {
         int roomId = getAccessibleRoomIdByType(gameType);
 
-        if (roomId != -1) {
-            joinRoom(roomId, user);
-        } else {
-            roomId = createRoom(gameType, 4); // TODO: somehow receive maxMembers
-            joinRoom(roomId, user);
+        if (roomId == -1) {
+            roomId = createRoom(gameType);
         }
+        joinRoom(roomId, user);
 
         return roomId;
     }
