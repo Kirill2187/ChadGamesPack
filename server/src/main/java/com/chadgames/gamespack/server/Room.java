@@ -91,6 +91,7 @@ public class Room {
     }
 
     public boolean makeMove(MoveData data) {
+        if (!gameState.isGameStarted()) return false;
         if (!gameState.checkMove(data)) return false;
         gameState.makeMove(data);
         return true;
