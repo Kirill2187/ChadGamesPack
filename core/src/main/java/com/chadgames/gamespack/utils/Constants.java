@@ -7,6 +7,7 @@ import com.chadgames.gamespack.games.chat.ChatFactory;
 import com.chadgames.gamespack.games.GameFactory;
 
 import com.chadgames.gamespack.games.GameType;
+import com.chadgames.gamespack.games.ticktacktoe.TickTackToeFactory;
 
 import java.util.HashMap;
 
@@ -18,8 +19,10 @@ public final class Constants {
 
     static {
         gameProperties.put(Chat, new GameProperties(1, 2, 100, true));
+        gameProperties.put(GameType.TickTackToe, new GameProperties(2, 2, 2, false));
 
         GAME_FACTORIES.put(GameType.Chat, new ChatFactory());
+        GAME_FACTORIES.put(GameType.TickTackToe, new TickTackToeFactory());
 
     }
 }

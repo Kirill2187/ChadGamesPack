@@ -9,4 +9,5 @@ public class TickTackToeMoveData extends MoveData {
         this.x = x;
         this.y = y;
     }
+    public TickTackToeMoveData() {}
 }

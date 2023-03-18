@@ -58,6 +58,7 @@ public class TickTackToeState extends GameState {
         field[data.x][data.y] = playerToSymbol.get(moveData.playerId);
         currentPlayerId = currentPlayerId == symbolToPlayer.get(Symbol.X) ? symbolToPlayer.get(Symbol.O) : symbolToPlayer.get(Symbol.X);
         int winner = checkWin();
+        System.out.println("Winner: " + winner);
         if (winner != -1) {
             finishGame();
         }
