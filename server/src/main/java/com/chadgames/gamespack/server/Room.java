@@ -1,5 +1,6 @@
 package com.chadgames.gamespack.server;
 
+import com.chadgames.gamespack.games.GameProperties;
 import com.chadgames.gamespack.games.GameState;
 import com.chadgames.gamespack.games.GameType;
 import com.chadgames.gamespack.games.MoveData;
@@ -11,11 +12,10 @@ import java.util.ArrayList;
 
 public class Room {
     private final GameType gameType;
+    private final GameProperties gameProperties;
     private ArrayList<User> users = new ArrayList<>();
     private boolean isActive = false;
     private GameState gameState;
-    private final int minMembers;
-    private final int maxMembers;
     private int curPlayerId = 0;
     private int adminId = -1;
 
@@ -23,10 +23,9 @@ public class Room {
         return users;
     }
 
-    public Room(GameType type, int min, int max) {
+    public Room(GameType type) {
         gameType = type;
-        minMembers = min;
-        maxMembers = max;
+        gameProperties = Constants.gameProperties.get(gameType);
         gameState = Constants.GAME_FACTORIES.get(gameType).createState();
     }
 
@@ -59,7 +58,7 @@ public class Room {
 
     public boolean startGame(int userId) {
         if (isActive) return false;
-        if (users.size() < minMembers) return false;
+        if (users.size() < gameProperties.getMinPlayers()) return false;
         if (userId == adminId) {
             gameState.startGame();
             isActive = true;
@@ -78,7 +77,7 @@ public class Room {
         }
         users.add(user);
 
-        if (users.size() == Constants.autostartPlayersInRoom.get(gameType) && !isActive) {
+        if (users.size() == gameProperties.getAutostartPlayers() && !isActive) {
             startGame(adminId);
         }
 
@@ -105,10 +104,6 @@ public class Room {
         return isActive;
     }
 
-    public boolean full() {
-        return users.size() >= maxMembers;
-    }
-
     public void sendToAll(Response response) {
         sendToAllExcept(response, -1);
     }
@@ -125,7 +120,10 @@ public class Room {
         return gameState;
     }
 
-    public int getMaxMembers() {
-        return maxMembers;
+    public boolean isFull() {
+        return users.size() >= gameProperties.getMaxPlayers();
+    }
+    public GameProperties getProperties() {
+        return gameProperties;
     }
 }

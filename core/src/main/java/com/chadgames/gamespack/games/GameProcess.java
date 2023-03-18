@@ -149,10 +149,10 @@ public class GameProcess {
     }
 
     public void updatePlayerCounter() {
-        int maxPlayers = Constants.autostartPlayersInRoom.get(gameType);
+        int autostartPlayers = Constants.gameProperties.get(gameType).getAutostartPlayers();
         int currentPlayers = gameState.players.size();
-        boolean allowedToStart = currentPlayers >= Constants.minPlayersInRoom.get(gameType);
-        waitWindow.setPlayerCount(currentPlayers, maxPlayers, allowedToStart);
+        boolean allowedToStart = currentPlayers >= Constants.gameProperties.get(gameType).getMinPlayers();
+        waitWindow.setPlayerCount(currentPlayers, autostartPlayers, allowedToStart);
     }
 
     public void dispose() {
