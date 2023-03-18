@@ -193,6 +193,9 @@ public class GameServer {
                             new Response(true, ResponseType.FetchMove, request.data),
                             connection.userId
                     );
+                    if (rooms.get(roomId).getGameState().isGameFinished()) {
+                        rooms.get(roomId).sendToAll(new Response(true, ResponseType.GameFinished, rooms.get(roomId).getGameState().getWinner()));
+                    }
                 } else {
                     connection.sendTCP(
                             new Response(false, ResponseType.FetchGameState, rooms.get(roomId).getGameState())

@@ -34,4 +34,12 @@ public abstract class GameState {
         gameFinished = true;
     }
     public abstract boolean checkMove(MoveData moveData);
+
+    public boolean isGameFinished() {
+        return gameFinished;
+    }
+
+    public int getWinner() {
+        return -1;
+    }
 }
