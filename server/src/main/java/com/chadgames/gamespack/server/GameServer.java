@@ -174,7 +174,7 @@ public class GameServer {
                 break;
             }
             case SendMove: {
-                int roomId = getRoomId(connection.userId);
+                int roomId = getRoomId(connection.userId); 
                 boolean success = false;
                 if (roomId != -1) {
                     success = rooms.get(roomId).makeMove((MoveData) request.data);

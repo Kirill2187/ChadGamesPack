@@ -23,6 +23,9 @@ public abstract class GameState {
     public abstract ActionsSequence playerJoined(Player player);
     public abstract ActionsSequence playerLeft(Player player);
     public abstract ActionsSequence makeMove(MoveData moveData);
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
     public void startGame() {
         gameStarted = true;
     }
