@@ -7,14 +7,12 @@ import com.chadgames.gamespack.network.Request;
 import com.chadgames.gamespack.network.RequestType;
 import com.chadgames.gamespack.network.Response;
 import com.chadgames.gamespack.network.ResponseType;
-import com.chadgames.gamespack.utils.Constants;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,7 +38,7 @@ public class GameServer {
     private int getAccessibleRoomIdByType(GameType gameType) {
         for (int key : rooms.keySet()) {
             Room cur = rooms.get(key);
-            if (cur.getGameType() == gameType && !cur.full() && !cur.isActive()) {
+            if (cur.getGameType() == gameType && !cur.isFull() && (!cur.isActive() || cur.getProperties().canJoinWhenStarted())) {
                 return key;
             }
         }
@@ -86,7 +84,7 @@ public class GameServer {
 
     private int createRoom(GameType gameType) {
         int roomId = curRoomId++;
-        rooms.put(roomId, new Room(gameType, Constants.minPlayersInRoom.get(gameType), Constants.maxPlayersInRoom.get(gameType)));
+        rooms.put(roomId, new Room(gameType));
         return roomId;
     }
 
@@ -161,7 +159,7 @@ public class GameServer {
                     joinSomeRoom(gameType, user);
                 } else {
                     int roomId = (int) request.data;
-                    if (rooms.containsKey(roomId) && rooms.get(roomId).size() < rooms.get(roomId).getMaxMembers()) {
+                    if (rooms.containsKey(roomId) && !rooms.get(roomId).isFull()) {
                         joinRoom(roomId, user);
                     } else {
                         user.getConnection().sendTCP(
