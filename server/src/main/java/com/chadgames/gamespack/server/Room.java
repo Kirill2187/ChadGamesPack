@@ -1,10 +1,10 @@
 package com.chadgames.gamespack.server;
 
-import com.chadgames.gamespack.games.GameGenerator;
 import com.chadgames.gamespack.games.GameState;
 import com.chadgames.gamespack.games.GameType;
 import com.chadgames.gamespack.games.MoveData;
 import com.chadgames.gamespack.network.Response;
+import com.chadgames.gamespack.utils.Constants;
 import com.chadgames.gamespack.utils.Player;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class Room {
         gameType = type;
         minMembers = min;
         maxMembers = max;
-        gameState = GameGenerator.generateState(gameType);
+        gameState = Constants.GAME_FACTORIES.get(type).createState();
     }
 
     public boolean hasUser(int userId) {

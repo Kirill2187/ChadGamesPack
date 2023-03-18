@@ -7,6 +7,7 @@ import com.chadgames.gamespack.GameManager;
 import com.chadgames.gamespack.network.Request;
 import com.chadgames.gamespack.network.RequestType;
 import com.chadgames.gamespack.network.Response;
+import com.chadgames.gamespack.utils.Constants;
 import com.chadgames.gamespack.utils.Player;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -20,8 +21,10 @@ public class GameProcess {
     private int myPlayerId;
 
     public GameProcess(GameType gameType, Stage stage, SpriteBatch batch) {
-        this.gameState = GameGenerator.generateState(gameType);
-        this.gameRenderer = GameGenerator.generateRenderer(gameType, this, stage, batch);
+        GameFactory gameFactory = Constants.GAME_FACTORIES.get(gameType);
+
+        this.gameState = gameFactory.createState();
+        this.gameRenderer = gameFactory.createRenderer(this, stage, batch);
         listener = new Listener() {
             @Override
             public void received(Connection connection, Object object) {
