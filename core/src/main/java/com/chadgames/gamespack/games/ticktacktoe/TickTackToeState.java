@@ -56,6 +56,7 @@ public class TickTackToeState extends GameState {
     public ActionsSequence makeMove(MoveData moveData) {
         TickTackToeMoveData data = (TickTackToeMoveData) moveData;
         field[data.x][data.y] = playerToSymbol.get(moveData.playerId);
+        currentPlayerId = currentPlayerId == symbolToPlayer.get(Symbol.X) ? symbolToPlayer.get(Symbol.O) : symbolToPlayer.get(Symbol.X);
         int winner = checkWin();
         if (winner != -1) {
             finishGame();
@@ -65,7 +66,8 @@ public class TickTackToeState extends GameState {
 
     @Override
     public boolean checkMove(MoveData moveData) {
-        if (gameFinished) return false;
+        if (gameFinished || !gameStarted) return false;
+        if (moveData.playerId != currentPlayerId) return false;
         TickTackToeMoveData data = (TickTackToeMoveData) moveData;
         if (data.x < 0 || data.x >= SIZE ||
             data.y < 0 || data.y >= SIZE) {
@@ -102,5 +104,11 @@ public class TickTackToeState extends GameState {
             }
         }
         return -1;
+    }
+
+    @Override
+    public void startGame() {
+        super.startGame();
+        currentPlayerId = symbolToPlayer.get(Symbol.X);
     }
 }
