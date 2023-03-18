@@ -105,7 +105,7 @@ public class GameServer {
         );
         boolean activeAfter = room.isActive();
         if (activeAfter && !activeBefore) {
-            room.sendToAll(new Response(true, ResponseType.GameStarted, null));
+            room.sendToAll(new Response(true, ResponseType.GameStarted, room.getGameState()));
         }
 
     }
@@ -167,7 +167,7 @@ public class GameServer {
             case StartGame: {
                 int roomId = getRoomId(connection.userId);
                 if (rooms.get(roomId).startGame(connection.userId)) {
-                    rooms.get(roomId).sendToAll(new Response(true, ResponseType.GameStarted, null));
+                    rooms.get(roomId).sendToAll(new Response(true, ResponseType.GameStarted, rooms.get(roomId).getGameState()));
                 } else {
                     connection.sendTCP(new Response(false, ResponseType.GameStarted, null));
                 }

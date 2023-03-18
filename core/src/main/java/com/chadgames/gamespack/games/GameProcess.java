@@ -53,6 +53,12 @@ public class GameProcess {
                 playerLeft((Player) response.data);
                 break;
             }
+            case GameStarted: {
+                if (response.success) {
+                    fetchGameState((GameState) response.data);
+                }
+                break;
+            }
             case FetchGameState: {
                 Gdx.app.log("debug", "Received game state");
                 fetchGameState((GameState) response.data);

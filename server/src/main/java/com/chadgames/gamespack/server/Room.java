@@ -61,6 +61,7 @@ public class Room {
         if (isActive) return false;
         if (users.size() < minMembers) return false;
         if (userId == adminId) {
+            gameState.startGame();
             isActive = true;
             return true;
         }
