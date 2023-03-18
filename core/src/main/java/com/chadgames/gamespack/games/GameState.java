@@ -8,6 +8,7 @@ public abstract class GameState {
 
     protected HashMap<Integer, Player> players = new HashMap<>();
     protected boolean gameStarted = false;
+    protected boolean gameFinished = false;
 
     public Player getPlayerById(int id) {
         assert players.containsKey(id);
@@ -28,6 +29,9 @@ public abstract class GameState {
     }
     public void startGame() {
         gameStarted = true;
+    }
+    public void finishGame() {
+        gameFinished = true;
     }
     public abstract boolean checkMove(MoveData moveData);
 }

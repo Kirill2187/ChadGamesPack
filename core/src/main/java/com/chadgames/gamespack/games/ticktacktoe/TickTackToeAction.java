@@ -5,8 +5,10 @@ import com.chadgames.gamespack.games.ActionsSequence;
 public class TickTackToeAction implements ActionsSequence {
     public int x;
     public int y;
-    public TickTackToeAction(int x, int y) {
+    public Symbol symbol;
+    public TickTackToeAction(int x, int y, Symbol symbol) {
         this.x = x;
         this.y = y;
+        this.symbol = symbol;
     }
 }

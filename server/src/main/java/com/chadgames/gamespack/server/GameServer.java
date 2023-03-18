@@ -198,6 +198,7 @@ public class GameServer {
                             new Response(false, ResponseType.FetchGameState, rooms.get(roomId).getGameState())
                     );
                 }
+                // TODO: check if game finished
                 break;
             }
             case LeaveRoom: {
