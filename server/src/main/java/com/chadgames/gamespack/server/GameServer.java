@@ -15,6 +15,9 @@ import com.esotericsoftware.kryonet.Server;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameServer {
     private Server server;
@@ -22,6 +25,8 @@ public class GameServer {
     private HashMap<Integer, User> users = new HashMap<>();
     private int curUserId = 0;
     private int curRoomId = 0;
+
+    private static final Logger LOGGER = Logger.getLogger(GameServer.class.getName());
 
     private int getRoomId(int userId) {
         for (int key : rooms.keySet()) {
@@ -43,6 +48,11 @@ public class GameServer {
     }
 
     GameServer() throws IOException {
+        LOGGER.setUseParentHandlers(false);
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setLevel(Level.ALL);
+        LOGGER.setLevel(Level.ALL);
+        LOGGER.addHandler(handler);
         server = new Server() {
             @Override
             protected Connection newConnection() {
@@ -62,7 +72,7 @@ public class GameServer {
 
                 leaveRoom(getUserById(myConnection.userId));
                 users.remove(myConnection.userId);
-                System.out.println("User " + myConnection.userId + " disconnected");
+                LOGGER.fine("User " + myConnection.userId + " disconnected");
             }
 
             public void received(Connection connection, Object object) {
@@ -71,6 +81,7 @@ public class GameServer {
                 }
             }
         });
+        LOGGER.info("Game server started!");
     }
 
     private int createRoom(GameType gameType) {
@@ -89,8 +100,8 @@ public class GameServer {
         room.join(user); // After this call user.player must be initialized and assigned an id
         assert user.player != null;
 
-        System.out.println("User " + user.getUsername() + " joined room " + roomId);
-        System.out.println("User " + user.getUsername() + " assigned id " + user.player.id);
+        LOGGER.finer("User " + user.getUsername() + " joined room " + roomId);
+        LOGGER.finer("User " + user.getUsername() + " assigned id " + user.player.id);
 
         user.getConnection().sendTCP(
                 new Response(true, ResponseType.PlayerIdAssigned, user.player.id)
@@ -114,7 +125,7 @@ public class GameServer {
         int userId = user.getUserId();
         int ejectRoomId = getRoomId(userId);
         if (ejectRoomId != -1) {
-            System.out.println("User " + user.getUsername() + " disconnected from room " + ejectRoomId);
+            LOGGER.finer("User " + user.getUsername() + " disconnected from room " + ejectRoomId);
 
             Room ejectRoom = rooms.get(ejectRoomId);
             ejectRoom.leave(userId);
@@ -131,7 +142,7 @@ public class GameServer {
     public void processRequest(MyConnection connection, Request request) {
         if (request == null) return;
         if (!connection.registered && request.requestType != RequestType.RegisterUser) {
-            System.out.println("Unregistered user tried to send request");
+            LOGGER.warning("Unregistered user tried to send request");
             return;
         }
 
@@ -139,7 +150,7 @@ public class GameServer {
             case RegisterUser: {
                 String username = (String) request.data;
                 int userId = registerUser(connection, username);
-                System.out.println(String.format("User %s registered, given id=%d", username, userId));
+                LOGGER.fine(String.format("User %s registered, given id=%d", username, userId));
                 break;
             }
             case JoinRoom: {
@@ -174,7 +185,7 @@ public class GameServer {
                 break;
             }
             case SendMove: {
-                int roomId = getRoomId(connection.userId); 
+                int roomId = getRoomId(connection.userId);
                 boolean success = false;
                 if (roomId != -1) {
                     success = rooms.get(roomId).makeMove((MoveData) request.data);
