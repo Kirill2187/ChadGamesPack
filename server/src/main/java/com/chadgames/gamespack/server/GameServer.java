@@ -92,15 +92,15 @@ public class GameServer {
         System.out.println("User " + user.getUsername() + " assigned id " + user.player.id);
 
         user.getConnection().sendTCP(
-            new Response(true, ResponseType.PlayerIdAssigned, user.player.id)
+                new Response(true, ResponseType.PlayerIdAssigned, user.player.id)
         );
         user.getConnection().sendTCP(
-            new Response(true, ResponseType.FetchGameState, room.getGameState())
+                new Response(true, ResponseType.FetchGameState, room.getGameState())
         );
         // We do not need to send "user joined" message to the user who joined,
         // because updates are already fetched in the previous line
         room.sendToAllExcept(
-            new Response(true, ResponseType.UserJoined, user.player), user.getUserId()
+                new Response(true, ResponseType.UserJoined, user.player), user.getUserId()
         );
     }
 
@@ -113,7 +113,7 @@ public class GameServer {
             Room ejectRoom = rooms.get(ejectRoomId);
             ejectRoom.leave(userId);
             ejectRoom.sendToAll(
-                new Response(true, ResponseType.UserLeft, user.player)
+                    new Response(true, ResponseType.UserLeft, user.player)
             );
 
             if (ejectRoom.size() == 0) {
@@ -147,15 +147,15 @@ public class GameServer {
                     if (rooms.containsKey(roomId)) {
                         joinRoom(roomId, user);
                     } else {
-                        // TODO: send failure response
+                        user.getConnection().sendTCP(
+                                new Response(false, ResponseType.UserJoined, null)
+                        );
                     }
                 }
                 break;
             }
             case CreateRoom: {
-                int newRoom = createRoom((GameType) request.data); // TODO: somehow receive maxMembers
-                rooms.get(newRoom).join(getUserById(connection.userId));
-                // TODO: response success
+                joinRoom(createRoom((GameType) request.data), getUserById(connection.userId));
                 break;
             }
             case SendMove: {
@@ -166,12 +166,12 @@ public class GameServer {
                 }
                 if (success) {
                     rooms.get(roomId).sendToAllExcept(
-                        new Response(true, ResponseType.FetchMove, request.data),
-                        connection.userId
+                            new Response(true, ResponseType.FetchMove, request.data),
+                            connection.userId
                     );
                 } else {
                     connection.sendTCP(
-                        new Response(false, ResponseType.FetchGameState, rooms.get(roomId).getGameState())
+                            new Response(false, ResponseType.FetchGameState, rooms.get(roomId).getGameState())
                     );
                 }
                 break;
