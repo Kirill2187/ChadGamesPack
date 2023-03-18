@@ -81,7 +81,7 @@ public class TickTackToeState extends GameState {
 
     private int checkOneLine(int i, int j, int dx, int dy) {
         int cx = 0, co = 0;
-        for (int k = 0; k < TO_WIN && i + k < SIZE && j + k < SIZE; ++k) {
+        for (int k = 0; k < TO_WIN && i + k * dx < SIZE && j + k * dy < SIZE; ++k) {
             if (field[i + dx * k][j + dy * k] == Symbol.X) {
                 ++cx;
             } else if (field[i + dx * k][j + dy * k] == Symbol.O) {
