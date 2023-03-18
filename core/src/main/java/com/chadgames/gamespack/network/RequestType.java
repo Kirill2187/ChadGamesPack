@@ -4,6 +4,7 @@ public enum RequestType {
     RegisterUser,
     CreateRoom,
     JoinRoom,
+    StartGame,
     SendMove,
     LeaveRoom,
 }

@@ -10,13 +10,14 @@ import com.chadgames.gamespack.utils.Player;
 import java.util.ArrayList;
 
 public class Room {
-    private GameType gameType;
+    private final GameType gameType;
     private ArrayList<User> users = new ArrayList<>();
-    private boolean isActive;
+    private boolean isActive = false;
     private GameState gameState;
     private final int minMembers;
     private final int maxMembers;
     private int curPlayerId = 0;
+    private int adminId = -1;
 
     public ArrayList<User> getUsers() {
         return users;
@@ -26,7 +27,7 @@ public class Room {
         gameType = type;
         minMembers = min;
         maxMembers = max;
-        gameState = Constants.GAME_FACTORIES.get(type).createState();
+        gameState = Constants.GAME_FACTORIES.get(gameType).createState();
     }
 
     public boolean hasUser(int userId) {
@@ -42,14 +43,28 @@ public class Room {
         for (int i = 0; i < users.size(); ++i) {
             if (users.get(i).getUserId() == userId) {
                 User user = users.get(i);
-                users.remove(i);
+                boolean adminLeft = user.getUserId() == adminId;
 
                 gameState.removePlayer(user.getPlayerId());
                 gameState.playerLeft(user.player);
 
+                users.remove(i);
+                if (adminLeft && !users.isEmpty()) {
+                    adminId = users.get(0).getUserId();
+                }
                 return;
             }
         }
+    }
+
+    public boolean startGame(int userId) {
+        if (isActive) return false;
+        if (users.size() < minMembers) return false;
+        if (userId == adminId) {
+            isActive = true;
+            return true;
+        }
+        return false;
     }
 
     public int size() {
@@ -57,7 +72,14 @@ public class Room {
     }
 
     public void join(User user) {
+        if (users.size() == 0) {
+            adminId = user.getUserId();
+        }
         users.add(user);
+
+        if (users.size() == Constants.autostartPlayersInRoom.get(gameType) && !isActive) {
+            startGame(adminId);
+        }
 
         user.player = new Player();
         user.player.id = curPlayerId++;
@@ -77,16 +99,8 @@ public class Room {
         return gameType;
     }
 
-    public void setGameType(GameType gameType) {
-        this.gameType = gameType;
-    }
-
     public boolean isActive() {
         return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     public boolean full() {
@@ -107,5 +121,9 @@ public class Room {
 
     public GameState getGameState() {
         return gameState;
+    }
+
+    public int getMaxMembers() {
+        return maxMembers;
     }
 }

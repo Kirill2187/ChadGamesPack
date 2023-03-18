@@ -85,6 +85,7 @@ public class GameServer {
 
     private void joinRoom(int roomId, User user) {
         Room room = rooms.get(roomId);
+        boolean activeBefore = room.isActive();
         room.join(user); // After this call user.player must be initialized and assigned an id
         assert user.player != null;
 
@@ -102,6 +103,11 @@ public class GameServer {
         room.sendToAllExcept(
                 new Response(true, ResponseType.UserJoined, user.player), user.getUserId()
         );
+        boolean activeAfter = room.isActive();
+        if (activeAfter && !activeBefore) {
+            room.sendToAll(new Response(true, ResponseType.GameStarted, null));
+        }
+
     }
 
     private void leaveRoom(User user) {
@@ -144,7 +150,7 @@ public class GameServer {
                     joinSomeRoom(gameType, user);
                 } else {
                     int roomId = (int) request.data;
-                    if (rooms.containsKey(roomId)) {
+                    if (rooms.containsKey(roomId) && rooms.get(roomId).size() < rooms.get(roomId).getMaxMembers()) {
                         joinRoom(roomId, user);
                     } else {
                         user.getConnection().sendTCP(
@@ -156,6 +162,15 @@ public class GameServer {
             }
             case CreateRoom: {
                 joinRoom(createRoom((GameType) request.data), getUserById(connection.userId));
+                break;
+            }
+            case StartGame: {
+                int roomId = getRoomId(connection.userId);
+                if (rooms.get(roomId).startGame(connection.userId)) {
+                    rooms.get(roomId).sendToAll(new Response(true, ResponseType.GameStarted, null));
+                } else {
+                    connection.sendTCP(new Response(false, ResponseType.GameStarted, null));
+                }
                 break;
             }
             case SendMove: {

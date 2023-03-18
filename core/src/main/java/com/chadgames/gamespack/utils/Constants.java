@@ -13,12 +13,13 @@ public final class Constants {
 
     public static final HashMap<GameType, GameFactory> GAME_FACTORIES = new HashMap<>();
     public static HashMap<GameType, Integer> minPlayersInRoom = new HashMap();
+    public static HashMap<GameType, Integer> autostartPlayersInRoom = new HashMap();
     public static HashMap<GameType, Integer> maxPlayersInRoom = new HashMap();
 
     static {
         minPlayersInRoom.put(Chat, 1);
-
-        maxPlayersInRoom.put(Chat, 16);
+        autostartPlayersInRoom.put(Chat, 2);
+        maxPlayersInRoom.put(Chat, 100);
 
         GAME_FACTORIES.put(GameType.Chat, new ChatFactory());
 
