@@ -46,7 +46,7 @@ public class MenuScreen implements Screen {
 
         Table bottomTable = new Table();
 
-        TextButton testButton = new TextButton("Test", skin);
+        TextButton testButton = new TextButton("Chat", skin);
         testButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -57,7 +57,7 @@ public class MenuScreen implements Screen {
 
         bottomTable.add(new Table()).expandX().fillX();
 
-        TextButton exitButton = new TextButton("Exit", skin);
+        TextButton exitButton = new TextButton("TTT", skin);
         bottomTable.add(exitButton);
         exitButton.addListener(new ClickListener() {
             @Override
