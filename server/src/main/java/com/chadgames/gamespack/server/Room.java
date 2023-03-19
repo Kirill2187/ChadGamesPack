@@ -46,6 +46,7 @@ public class Room {
 
                 gameState.removePlayer(user.getPlayerId());
                 gameState.playerLeft(user.player);
+                gameState.updateWinner();
 
                 users.remove(i);
                 if (adminLeft && !users.isEmpty()) {
@@ -90,9 +91,10 @@ public class Room {
     }
 
     public boolean makeMove(MoveData data) {
-        if (!gameState.isGameStarted()) return false;
+        if (!gameState.isGameStarted() || gameState.isGameFinished()) return false;
         if (!gameState.checkMove(data)) return false;
         gameState.makeMove(data);
+        gameState.updateWinner();
         return true;
     }
 

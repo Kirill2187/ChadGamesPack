@@ -42,4 +42,11 @@ public abstract class GameState {
     public int getWinner() {
         return -1;
     }
+
+    public void updateWinner() {
+        if (gameFinished || !gameStarted) return;
+        if (getWinner() != -1) {
+            finishGame();
+        }
+    }
 }

@@ -97,6 +97,15 @@ public class GameProcess {
                 Gdx.app.log("debug", "My player id is " + myPlayerId);
                 break;
             }
+            case GameFinished: {
+                int winnerId = (int) response.data;
+                Gdx.app.log("debug", "Game finished, player " + gameState.getPlayerById(winnerId).username + " won");
+                if (!gameState.isGameFinished()) {
+                    gameState.finishGame();
+                    // TODO: notify renderer
+                }
+                break;
+            }
         }
     }
 

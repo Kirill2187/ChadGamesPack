@@ -1,5 +1,6 @@
 package com.chadgames.gamespack.server;
 
+import com.chadgames.gamespack.games.GameState;
 import com.chadgames.gamespack.games.GameType;
 import com.chadgames.gamespack.games.MoveData;
 import com.chadgames.gamespack.network.Network;
@@ -126,10 +127,13 @@ public class GameServer {
             LOGGER.finer("User " + user.getUsername() + " disconnected from room " + ejectRoomId);
 
             Room ejectRoom = rooms.get(ejectRoomId);
+            boolean wasFinished = ejectRoom.getGameState().isGameFinished();
+
             ejectRoom.leave(userId);
             ejectRoom.sendToAll(
                     new Response(true, ResponseType.UserLeft, user.player)
             );
+            if (!wasFinished) checkWinnerAndNotify(ejectRoomId);
 
             if (ejectRoom.size() == 0) {
                 deleteRoom(ejectRoomId);
@@ -193,9 +197,7 @@ public class GameServer {
                             new Response(true, ResponseType.FetchMove, request.data),
                             connection.userId
                     );
-                    if (rooms.get(roomId).getGameState().isGameFinished()) {
-                        rooms.get(roomId).sendToAll(new Response(true, ResponseType.GameFinished, rooms.get(roomId).getGameState().getWinner()));
-                    }
+                    checkWinnerAndNotify(roomId);
                 } else {
                     connection.sendTCP(
                             new Response(false, ResponseType.FetchGameState, rooms.get(roomId).getGameState())
@@ -234,6 +236,18 @@ public class GameServer {
         joinRoom(roomId, user);
 
         return roomId;
+    }
+
+    private boolean checkWinnerAndNotify(int roomId) {
+        GameState gameState = rooms.get(roomId).getGameState();
+        if (gameState.isGameFinished()) {
+            LOGGER.fine("Game in room " + roomId + " finished, winnerId is " + gameState.getWinner());
+            rooms.get(roomId).sendToAll(
+                    new Response(true, ResponseType.GameFinished, gameState.getWinner())
+            );
+            return true;
+        }
+        return false;
     }
 
     private User getUserById(int userId) {

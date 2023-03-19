@@ -57,10 +57,6 @@ public class TicTacToeState extends GameState {
         TicTacToeMoveData data = (TicTacToeMoveData) moveData;
         field[data.x][data.y] = playerToSymbol.get(moveData.playerId);
         currentPlayerId = currentPlayerId == symbolToPlayer.get(Symbol.X) ? symbolToPlayer.get(Symbol.O) : symbolToPlayer.get(Symbol.X);
-        int winner = checkWin();
-        if (winner != -1) {
-            finishGame();
-        }
         return new TicTacToeActions(data.x, data.y, field[data.x][data.y]);
     }
 
@@ -118,6 +114,10 @@ public class TicTacToeState extends GameState {
 
     @Override
     public int getWinner() {
+        if (!isGameStarted()) return -1;
+        if (players.size() == 1) {
+            return players.values().iterator().next().id;
+        }
         return checkWin();
     }
 }
