@@ -102,6 +102,7 @@ public class GameProcess {
     }
 
     public void render(float delta) {
+        if (gameState.isGameStarted() && windowTable.isVisible()) windowTable.setVisible(false);
         gameRenderer.render(delta);
     }
 
