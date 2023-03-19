@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.chadgames.gamespack.games.ActionsSequence;
 import com.chadgames.gamespack.games.GameProcess;
@@ -25,10 +26,14 @@ public class TickTackToeRenderer extends GameRenderer {
         root.center();
         stage.addActor(root);
 
+        Table gameTable = new Table();
+        gameTable.debugAll();
+        gameTable.defaults().minSize(0).maxSize(1000);
+
         for (int i = 0; i < TickTackToeConstants.SIZE; i++) {
             for (int j = 0; j < TickTackToeConstants.SIZE; j++) {
                 cells[i][j] = new TickTackToeCell(i, j);
-                root.add(cells[i][j]).grow();
+                gameTable.add(cells[i][j]).grow();
 
                 cells[i][j].addListener(new ClickListener() {
                     @Override
@@ -42,8 +47,13 @@ public class TickTackToeRenderer extends GameRenderer {
                     }
                 });
             }
-            root.row();
+            gameTable.row();
         }
+
+        root.add(gameTable)
+            .grow()
+            .maxHeight(Value.percentWidth(1f, root))
+            .maxWidth(Value.percentHeight(1f, root));
     }
 
     @Override
