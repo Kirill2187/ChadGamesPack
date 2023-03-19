@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -46,25 +47,25 @@ public class MenuScreen implements Screen {
 
         Table bottomTable = new Table();
 
-        TextButton testButton = new TextButton("Chat", skin);
-        testButton.addListener(new ClickListener() {
+        TextButton chatButton = new TextButton("Chat", skin);
+        chatButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 GameManager.getInstance().launchGame(GameType.Chat);
             }
         });
-        bottomTable.add(testButton);
+        bottomTable.add(chatButton);
 
         bottomTable.add(new Table()).expandX().fillX();
 
-        TextButton exitButton = new TextButton("TTT", skin);
-        bottomTable.add(exitButton);
-        exitButton.addListener(new ClickListener() {
+        TextButton tttButton = new TextButton("TTT", skin);
+        tttButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 GameManager.getInstance().launchGame(GameType.TicTacToe);
             }
         });
+        bottomTable.add(tttButton);
 
         root.add(bottomTable).fillX().padLeft(10).padRight(10).padBottom(5).row();
     }

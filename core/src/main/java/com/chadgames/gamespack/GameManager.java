@@ -14,6 +14,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
 import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GameManager extends Game {
 
@@ -33,7 +34,8 @@ public class GameManager extends Game {
         Network.registerClasses(client);
     }
     private String generateDefaultUsername() {
-        return "Chad";
+        int randomNum = ThreadLocalRandom.current().nextInt(1000, 10000);
+        return "Chad" + Integer.toString(randomNum);
     }
 
     @Override
