@@ -12,7 +12,7 @@ public class ChatState extends GameState {
 
     @Override
     public Actions playerJoined(Player player) {
-        String message = "[" + player.username + "] joined";
+        String message = "[    " + player.username + " joined    ]";
         messages.add(message);
         ChatActions actionsSequence = new ChatActions();
         actionsSequence.messageToAdd = message;
@@ -21,7 +21,7 @@ public class ChatState extends GameState {
 
     @Override
     public Actions playerLeft(Player player) {
-        String message = "[" + player.username + "] left";
+        String message = "[    " + player.username + " left    ]";
         messages.add(message);
         ChatActions actionsSequence = new ChatActions();
         actionsSequence.messageToAdd = message;

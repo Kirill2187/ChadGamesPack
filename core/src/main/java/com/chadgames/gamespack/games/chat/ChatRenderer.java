@@ -95,6 +95,7 @@ public class ChatRenderer extends GameRenderer {
         for (String message : ((ChatState) gameState).messages) {
             messages.append(message).append("\n");
         }
+        messages.setLength(messages.length() - 1);
         receivedMessages.setText(messages.toString());
     }
 }
