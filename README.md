@@ -1,16 +1,27 @@
 # ChadGamesPack
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/tommyettinger/gdx-liftoff).
+A cross-platform game, with a collection of multiplayer mini-games, 
+and architecture that allows (in theory) for easy addition of new ones
 
-This project was generated with a template including simple application launchers and a main class extending `Game` that sets the first screen.
+We use cross-platform library [libGDX](https://libgdx.com/) for the game engine,
+and [Kryonet](https://github.com/EsotericSoftware/kryonet) for networking. 
+
+## Architecture
+
+UML diagram can be found in the `uml` folder 
+
+## How to build and run
+
+- Clone git repo
+- Run `./gradlew server:run` to start the server
+- Run `./gradlew lwjgl3:run` to build and run the desktop version
 
 ## Platforms
 
 - `core`: Main module with the application logic shared by all platforms.
 - `lwjgl3`: Primary desktop platform using LWJGL3.
 - `android`: Android mobile platform. Needs Android SDK.
-- `html`: Web platform using GWT and WebGL. Supports only Java projects.
-- `server`: A separate application without access to the `core` module.
+- `server`: A server console application, depends only on `core`
 
 ## Gradle
 
@@ -24,13 +35,8 @@ Useful Gradle tasks and flags:
 - `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
 - `android:lint`: performs Android project validation.
 - `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
 - `clean`: removes `build` folders, which store compiled classes and built archives.
 - `eclipse`: generates Eclipse project data.
-- `html:dist`: compiles GWT sources. The compiled application can be found at `html/build/dist`: you can use any HTTP server to deploy it.
-- `html:superDev`: compiles GWT sources and runs the application in SuperDev mode. It will be available at [localhost:8080/html](http://localhost:8080/html). Use only during development.
-- `idea`: generates IntelliJ project data.
 - `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
 - `lwjgl3:run`: starts the application.
 - `server:run`: runs the server application.
