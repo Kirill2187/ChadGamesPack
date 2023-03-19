@@ -1,15 +1,15 @@
-package com.chadgames.gamespack.games.ticktacktoe;
+package com.chadgames.gamespack.games.tictactoe;
 
-import static com.chadgames.gamespack.games.ticktacktoe.TickTackToeConstants.*;
+import static com.chadgames.gamespack.games.tictactoe.TicTacToeConstants.*;
 
-import com.chadgames.gamespack.games.ActionsSequence;
+import com.chadgames.gamespack.games.Actions;
 import com.chadgames.gamespack.games.GameState;
 import com.chadgames.gamespack.games.MoveData;
 import com.chadgames.gamespack.utils.Player;
 
 import java.util.HashMap;
 
-public class TickTackToeState extends GameState {
+public class TicTacToeState extends GameState {
 
     private Symbol[][] field = new Symbol[SIZE][SIZE];
     public Symbol getSymbol(int x, int y) {
@@ -24,7 +24,7 @@ public class TickTackToeState extends GameState {
 
     public int currentPlayerId = 0;
 
-    public TickTackToeState() {
+    public TicTacToeState() {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 field[i][j] = Symbol.EMPTY;
@@ -33,7 +33,7 @@ public class TickTackToeState extends GameState {
     }
 
     @Override
-    public ActionsSequence playerJoined(Player player) {
+    public Actions playerJoined(Player player) {
         if (!symbolToPlayer.containsKey(Symbol.X)) {
             symbolToPlayer.put(Symbol.X, player.id);
             playerToSymbol.put(player.id, Symbol.X);
@@ -45,7 +45,7 @@ public class TickTackToeState extends GameState {
     }
 
     @Override
-    public ActionsSequence playerLeft(Player player) {
+    public Actions playerLeft(Player player) {
         Symbol s = playerToSymbol.get(player);
         playerToSymbol.remove(player);
         symbolToPlayer.remove(s);
@@ -53,22 +53,22 @@ public class TickTackToeState extends GameState {
     }
 
     @Override
-    public ActionsSequence makeMove(MoveData moveData) {
-        TickTackToeMoveData data = (TickTackToeMoveData) moveData;
+    public Actions makeMove(MoveData moveData) {
+        TicTacToeMoveData data = (TicTacToeMoveData) moveData;
         field[data.x][data.y] = playerToSymbol.get(moveData.playerId);
         currentPlayerId = currentPlayerId == symbolToPlayer.get(Symbol.X) ? symbolToPlayer.get(Symbol.O) : symbolToPlayer.get(Symbol.X);
         int winner = checkWin();
         if (winner != -1) {
             finishGame();
         }
-        return new TickTackToeAction(data.x, data.y, field[data.x][data.y]);
+        return new TicTacToeActions(data.x, data.y, field[data.x][data.y]);
     }
 
     @Override
     public boolean checkMove(MoveData moveData) {
         if (gameFinished || !gameStarted) return false;
         if (moveData.playerId != currentPlayerId) return false;
-        TickTackToeMoveData data = (TickTackToeMoveData) moveData;
+        TicTacToeMoveData data = (TicTacToeMoveData) moveData;
         if (data.x < 0 || data.x >= SIZE ||
             data.y < 0 || data.y >= SIZE) {
             return false;
@@ -76,7 +76,7 @@ public class TickTackToeState extends GameState {
         if (field[data.x][data.y] != Symbol.EMPTY) {
             return false;
         }
-        return moveData.playerId == currentPlayerId;
+        return true;
     }
 
     private int checkOneLine(int i, int j, int dx, int dy) {

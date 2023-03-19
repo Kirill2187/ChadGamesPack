@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.chadgames.gamespack.GameManager;
 import com.chadgames.gamespack.network.Request;
 import com.chadgames.gamespack.network.RequestType;
@@ -109,7 +108,7 @@ public class GameProcess {
     public boolean makeMove(MoveData moveData) {
         if (!gameState.isGameStarted()) return false;
         if (!gameState.checkMove(moveData)) return false;
-        ActionsSequence sequence = gameState.makeMove(moveData);
+        Actions sequence = gameState.makeMove(moveData);
         gameRenderer.makeActions(sequence);
         return true;
     }
@@ -130,12 +129,12 @@ public class GameProcess {
 
     public void playerJoined(Player player) {
         gameState.addPlayer(player);
-        ActionsSequence sequence = gameState.playerJoined(player);
+        Actions sequence = gameState.playerJoined(player);
         gameRenderer.makeActions(sequence);
     }
     public void playerLeft(Player player) {
         gameState.removePlayer(player.id);
-        ActionsSequence sequence = gameState.playerLeft(player);
+        Actions sequence = gameState.playerLeft(player);
         gameRenderer.makeActions(sequence);
     }
     public void fetchGameState(GameState gameState) {

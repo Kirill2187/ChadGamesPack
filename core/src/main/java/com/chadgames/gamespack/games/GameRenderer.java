@@ -1,6 +1,5 @@
 package com.chadgames.gamespack.games;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
@@ -16,6 +15,6 @@ public abstract class GameRenderer {
     }
 
     public abstract void render(float delta);
-    public abstract void makeActions(ActionsSequence actionsSequence);
+    public abstract void makeActions(Actions actions);
     public abstract void loadFromState(GameState gameState);
 }

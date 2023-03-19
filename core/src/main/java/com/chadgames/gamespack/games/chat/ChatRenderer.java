@@ -1,6 +1,5 @@
 package com.chadgames.gamespack.games.chat;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,20 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.chadgames.gamespack.GameManager;
-import com.chadgames.gamespack.games.ActionsSequence;
+import com.chadgames.gamespack.games.Actions;
 import com.chadgames.gamespack.games.GameProcess;
 import com.chadgames.gamespack.games.GameRenderer;
 import com.chadgames.gamespack.games.GameState;
-import com.chadgames.gamespack.games.GameType;
-import com.chadgames.gamespack.games.MoveData;
-import com.chadgames.gamespack.network.Request;
-import com.chadgames.gamespack.network.RequestType;
 
 public class ChatRenderer extends GameRenderer {
 
@@ -91,8 +83,8 @@ public class ChatRenderer extends GameRenderer {
     }
 
     @Override
-    public void makeActions(ActionsSequence actionsSequence) {
-        String current_message = ((ChatActionsSequence) actionsSequence).messageToAdd;
+    public void makeActions(Actions actions) {
+        String current_message = ((ChatActions) actions).messageToAdd;
         receivedMessages.setText(receivedMessages.getText() + "\n" + current_message);
     }
 

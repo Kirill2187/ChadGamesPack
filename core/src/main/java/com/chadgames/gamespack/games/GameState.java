@@ -21,9 +21,9 @@ public abstract class GameState {
         players.remove(id);
     }
 
-    public abstract ActionsSequence playerJoined(Player player);
-    public abstract ActionsSequence playerLeft(Player player);
-    public abstract ActionsSequence makeMove(MoveData moveData);
+    public abstract Actions playerJoined(Player player);
+    public abstract Actions playerLeft(Player player);
+    public abstract Actions makeMove(MoveData moveData);
     public boolean isGameStarted() {
         return gameStarted;
     }

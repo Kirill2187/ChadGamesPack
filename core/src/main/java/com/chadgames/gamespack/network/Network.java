@@ -3,9 +3,9 @@ package com.chadgames.gamespack.network;
 import com.chadgames.gamespack.games.GameType;
 import com.chadgames.gamespack.games.chat.ChatMoveData;
 import com.chadgames.gamespack.games.chat.ChatState;
-import com.chadgames.gamespack.games.ticktacktoe.Symbol;
-import com.chadgames.gamespack.games.ticktacktoe.TickTackToeMoveData;
-import com.chadgames.gamespack.games.ticktacktoe.TickTackToeState;
+import com.chadgames.gamespack.games.tictactoe.Symbol;
+import com.chadgames.gamespack.games.tictactoe.TicTacToeMoveData;
+import com.chadgames.gamespack.games.tictactoe.TicTacToeState;
 import com.chadgames.gamespack.utils.Player;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
@@ -33,11 +33,11 @@ public final class Network {
         kryo.register(ChatMoveData.class);
         kryo.register(ChatState.class);
 
-        kryo.register(TickTackToeMoveData.class);
+        kryo.register(TicTacToeMoveData.class);
         kryo.register(Symbol.class);
         kryo.register(Symbol[][].class);
         kryo.register(Symbol[].class);
-        kryo.register(TickTackToeState.class);
+        kryo.register(TicTacToeState.class);
     }
 
 }

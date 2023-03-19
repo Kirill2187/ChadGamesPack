@@ -1,4 +1,4 @@
-package com.chadgames.gamespack.games.ticktacktoe;
+package com.chadgames.gamespack.games.tictactoe;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class TickTackToeCell extends Actor {
+public class TicTacToeCell extends Actor {
     public int x;
     public int y;
     public Symbol symbol;
@@ -25,7 +25,7 @@ public class TickTackToeCell extends Actor {
         }
     }
 
-    public TickTackToeCell(int x, int y) {
+    public TicTacToeCell(int x, int y) {
         super();
         this.x = x;
         this.y = y;

@@ -1,4 +1,4 @@
-package com.chadgames.gamespack.games.ticktacktoe;
+package com.chadgames.gamespack.games.tictactoe;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -6,18 +6,17 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.chadgames.gamespack.games.ActionsSequence;
+import com.chadgames.gamespack.games.Actions;
 import com.chadgames.gamespack.games.GameProcess;
 import com.chadgames.gamespack.games.GameRenderer;
 import com.chadgames.gamespack.games.GameState;
-import com.chadgames.gamespack.games.MoveData;
 
-public class TickTackToeRenderer extends GameRenderer {
+public class TicTacToeRenderer extends GameRenderer {
 
-    private TickTackToeCell[][] cells =
-        new TickTackToeCell[TickTackToeConstants.SIZE][TickTackToeConstants.SIZE];
+    private TicTacToeCell[][] cells =
+        new TicTacToeCell[TicTacToeConstants.SIZE][TicTacToeConstants.SIZE];
 
-    public TickTackToeRenderer(GameProcess gameProcess, Stage stage, SpriteBatch batch) {
+    public TicTacToeRenderer(GameProcess gameProcess, Stage stage, SpriteBatch batch) {
         super(gameProcess, stage, batch);
 
         Table root = new Table();
@@ -30,16 +29,16 @@ public class TickTackToeRenderer extends GameRenderer {
         gameTable.debugAll();
         gameTable.defaults().minSize(0).maxSize(1000);
 
-        for (int i = 0; i < TickTackToeConstants.SIZE; i++) {
-            for (int j = 0; j < TickTackToeConstants.SIZE; j++) {
-                cells[i][j] = new TickTackToeCell(i, j);
+        for (int i = 0; i < TicTacToeConstants.SIZE; i++) {
+            for (int j = 0; j < TicTacToeConstants.SIZE; j++) {
+                cells[i][j] = new TicTacToeCell(i, j);
                 gameTable.add(cells[i][j]).grow();
 
                 cells[i][j].addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        TickTackToeCell cell = (TickTackToeCell) event.getListenerActor();
-                        TickTackToeMoveData moveData = new TickTackToeMoveData(
+                        TicTacToeCell cell = (TicTacToeCell) event.getListenerActor();
+                        TicTacToeMoveData moveData = new TicTacToeMoveData(
                             cell.x, cell.y
                         );
                         moveData.playerId = gameProcess.getMyPlayerId();
@@ -60,17 +59,17 @@ public class TickTackToeRenderer extends GameRenderer {
     public void render(float delta) {}
 
     @Override
-    public void makeActions(ActionsSequence actionsSequence) {
-        if (actionsSequence == null) return;
-        TickTackToeAction action = (TickTackToeAction) actionsSequence;
+    public void makeActions(Actions actions) {
+        if (actions == null) return;
+        TicTacToeActions action = (TicTacToeActions) actions;
         cells[action.x][action.y].setSymbol(action.symbol);
     }
 
     @Override
     public void loadFromState(GameState gameState) {
-        TickTackToeState state = (TickTackToeState) gameState;
-        for (int i = 0; i < TickTackToeConstants.SIZE; i++) {
-            for (int j = 0; j < TickTackToeConstants.SIZE; j++) {
+        TicTacToeState state = (TicTacToeState) gameState;
+        for (int i = 0; i < TicTacToeConstants.SIZE; i++) {
+            for (int j = 0; j < TicTacToeConstants.SIZE; j++) {
                 cells[i][j].setSymbol(state.getSymbol(i, j));
             }
         }
