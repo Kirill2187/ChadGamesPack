@@ -10,6 +10,9 @@ and [Kryonet](https://github.com/EsotericSoftware/kryonet) for networking.
 
 UML diagram can be found in the `uml` folder 
 
+Implementation of each game is split into two parts: the game logic (GameState) and the rendering (GameRenderer).
+Client application stores a GameProcess, containing both of them, while the server stores only the GameState.
+
 ## How to build and run
 
 - Clone git repo
