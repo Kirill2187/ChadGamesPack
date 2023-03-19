@@ -82,15 +82,17 @@ public class TickTackToeState extends GameState {
 
     private int checkOneLine(int i, int j, int dx, int dy) {
         int cx = 0, co = 0;
-        for (int k = 0; k < TO_WIN && i + k * dx < SIZE && j + k * dy < SIZE; ++k) {
+        for (int k = 0; k < TO_WIN; ++k) {
+            if (i + k * dx < 0 || j + k * dy < 0) continue;
+            if (i + k * dx >= SIZE || j + k * dy >= SIZE) continue;
             if (field[i + dx * k][j + dy * k] == Symbol.X) {
                 ++cx;
             } else if (field[i + dx * k][j + dy * k] == Symbol.O) {
                 ++co;
             }
         }
-        if (cx == SIZE) return symbolToPlayer.get(Symbol.X);
-        if (co == SIZE) return symbolToPlayer.get(Symbol.O);
+        if (cx == TO_WIN) return symbolToPlayer.get(Symbol.X);
+        if (co == TO_WIN) return symbolToPlayer.get(Symbol.O);
         return -1;
     }
     private int checkWin() {
@@ -101,6 +103,8 @@ public class TickTackToeState extends GameState {
                 val = checkOneLine(i, j, 1, 0);
                 if (val != -1) return val;
                 val = checkOneLine(i, j, 1, 1);
+                if (val != -1) return val;
+                val = checkOneLine(i, j, 1, -1);
                 if (val != -1) return val;
             }
         }
