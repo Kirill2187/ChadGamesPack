@@ -2,6 +2,7 @@ package com.chadgames.gamespack.games.chat;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.chadgames.gamespack.games.GameFactory;
 import com.chadgames.gamespack.games.GameProcess;
 import com.chadgames.gamespack.games.GameRenderer;
@@ -14,7 +15,7 @@ public class ChatFactory extends GameFactory {
     }
 
     @Override
-    public GameRenderer createRenderer(GameProcess gameProcess, Stage stage, SpriteBatch batch) {
-        return new ChatRenderer(gameProcess, stage, batch);
+    public GameRenderer createRenderer(GameProcess gameProcess, Table rootTable, SpriteBatch batch) {
+        return new ChatRenderer(gameProcess, rootTable, batch);
     }
 }

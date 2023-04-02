@@ -22,8 +22,8 @@ import com.chadgames.gamespack.games.GameState;
 public class ChatRenderer extends GameRenderer {
 
     private Label receivedMessages;
-    public ChatRenderer(GameProcess gameProcess, Stage stage, SpriteBatch batch) {
-        super(gameProcess, stage, batch);
+    public ChatRenderer(GameProcess gameProcess, Table rootTable, SpriteBatch batch) {
+        super(gameProcess, rootTable, batch);
         Gdx.app.log("debug", "Chat renderer created");
 
         createUI();
@@ -32,18 +32,12 @@ public class ChatRenderer extends GameRenderer {
     private void createUI() {
         Skin skin = GameManager.getInstance().skin;
 
-        Table root = new Table();
-        root.debugAll();
-        root.setFillParent(true);
-        stage.addActor(root);
-        root.top();
-
         Table messages = new Table();
         messages.top();
-        root.add(messages).grow().padTop(5).padLeft(5).padRight(5).row();
+        rootTable.add(messages).grow().padTop(5).padLeft(5).padRight(5).row();
 
         Table bottomTable = new Table();
-        root.add(bottomTable).fillX().padLeft(10).padRight(10);
+        rootTable.add(bottomTable).fillX().padLeft(10).padRight(10);
 
         TextField testTextField = new TextField("", skin);
         bottomTable.add(testTextField).padRight(5).growX().minWidth(100);

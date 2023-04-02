@@ -1,10 +1,12 @@
 package com.chadgames.gamespack.games;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.chadgames.gamespack.GameManager;
 import com.chadgames.gamespack.network.Request;
@@ -31,8 +33,22 @@ public class GameProcess {
         this.gameType = gameType;
         GameFactory gameFactory = Constants.GAME_FACTORIES.get(gameType);
 
+        Table root = new Table();
+        root.setFillParent(true);
+        root.debugAll();
+        stage.addActor(root);
+
+        Table gameBar = new Table();
+        root.add(gameBar).expandX().height(50).row();
+
+        TextButton pauseButton = new TextButton("Pause", GameManager.getInstance().skin); // TODO: replace with ImageButton
+        gameBar.add(pauseButton).width(100).expandY();
+
+        Table gameTable = new Table();
+        root.add(gameTable).expand().fill().row();
+
         this.gameState = gameFactory.createState();
-        this.gameRenderer = gameFactory.createRenderer(this, stage, batch);
+        this.gameRenderer = gameFactory.createRenderer(this, gameTable, batch);
 
         windowTable = new Table();
         windowTable.setFillParent(true);
@@ -59,6 +75,10 @@ public class GameProcess {
         Client client = GameManager.getInstance().client;
         client.addListener(listener);
         client.sendTCP(new Request(RequestType.JoinRoom, gameType));
+    }
+
+    private void createUI(Stage stage) {
+
     }
 
     public void processResponse(Response response) {

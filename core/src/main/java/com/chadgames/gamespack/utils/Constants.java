@@ -15,7 +15,7 @@ public final class Constants {
     private Constants() {}
 
     public static final HashMap<GameType, GameFactory> GAME_FACTORIES = new HashMap<>();
-    public static HashMap<GameType, GameProperties> gameProperties = new HashMap();
+    public static HashMap<GameType, GameProperties> gameProperties = new HashMap<>();
 
     static {
         gameProperties.put(Chat, new GameProperties(1, 2, 100, true));

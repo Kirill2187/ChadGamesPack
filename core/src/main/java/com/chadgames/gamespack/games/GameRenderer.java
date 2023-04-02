@@ -2,15 +2,16 @@ package com.chadgames.gamespack.games;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public abstract class GameRenderer {
 
-    protected Stage stage;
+    protected Table rootTable;
     protected SpriteBatch batch;
     protected GameProcess gameProcess;
-    public GameRenderer(GameProcess gameProcess, Stage stage, SpriteBatch batch) {
+    public GameRenderer(GameProcess gameProcess, Table rootTable, SpriteBatch batch) {
         this.gameProcess = gameProcess;
-        this.stage = stage;
+        this.rootTable = rootTable;
         this.batch = batch;
     }
 
