@@ -94,6 +94,8 @@ public class GameManager extends Game {
     public void setMenuScreen() {
         if (menuScreen == null) {
             menuScreen = new MenuScreen();
+        } else {
+            getScreen().dispose();
         }
         setScreen(menuScreen);
     }
