@@ -155,6 +155,13 @@ public class GameServer {
                 LOGGER.fine(String.format("User %s registered, given id=%d", username, userId));
                 break;
             }
+            case ChangeUsername: {
+                if (getRoomId(connection.userId) != -1) break;
+                String newUsername = (String) request.data;
+                LOGGER.finer(String.format("User %s changed username to %s", connection.username, newUsername));
+                connection.username = newUsername;
+                break;
+            }
             case JoinRoom: {
                 int userId = connection.userId;
                 User user = getUserById(userId);
