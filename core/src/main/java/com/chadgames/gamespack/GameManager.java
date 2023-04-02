@@ -22,6 +22,8 @@ public class GameManager extends Game {
     public Skin skin;
     public String username;
     public Client client;
+    private MenuScreen menuScreen;
+
     public static GameManager getInstance() {
         return instance;
     }
@@ -42,7 +44,7 @@ public class GameManager extends Game {
     public void create() {
         skin = new Skin(Gdx.files.internal("ui/skin/flat-earth-ui.json")); // TODO: replace with custom skin
         asyncConnect();
-        setScreen(new MenuScreen());
+        setMenuScreen();
     }
 
     public void launchGame(GameType gameType) {
@@ -87,5 +89,12 @@ public class GameManager extends Game {
         request.requestType = RequestType.ChangeUsername;
         request.data = newUsername;
         client.sendTCP(request);
+    }
+
+    public void setMenuScreen() {
+        if (menuScreen == null) {
+            menuScreen = new MenuScreen();
+        }
+        setScreen(menuScreen);
     }
 }

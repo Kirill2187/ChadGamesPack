@@ -26,7 +26,6 @@ public class MenuScreen implements Screen {
         stage = new Stage(viewport);
         skin = GameManager.getInstance().skin;
 
-        Gdx.input.setInputProcessor(stage);
         createUI();
     }
 
@@ -86,7 +85,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void show() {
-        // Prepare your screen here.
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override

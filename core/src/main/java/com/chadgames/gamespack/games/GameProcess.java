@@ -1,17 +1,18 @@
 package com.chadgames.gamespack.games;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.chadgames.gamespack.GameManager;
 import com.chadgames.gamespack.network.Request;
 import com.chadgames.gamespack.network.RequestType;
 import com.chadgames.gamespack.network.Response;
+import com.chadgames.gamespack.ui.PauseWindow;
 import com.chadgames.gamespack.ui.WaitWindow;
 import com.chadgames.gamespack.utils.Constants;
 import com.chadgames.gamespack.utils.Player;
@@ -24,6 +25,7 @@ public class GameProcess {
     private GameRenderer gameRenderer;
     private Table windowTable;
     private WaitWindow waitWindow;
+    private PauseWindow pauseWindow;
     private GameState gameState;
     private GameType gameType;
     private Listener listener;
@@ -41,7 +43,15 @@ public class GameProcess {
         Table gameBar = new Table();
         root.add(gameBar).expandX().height(50).row();
 
-        TextButton pauseButton = new TextButton("Pause", GameManager.getInstance().skin); // TODO: replace with ImageButton
+        TextButton pauseButton = new TextButton("||", GameManager.getInstance().skin); // TODO: replace with ImageButton
+        pauseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+//                if (waitWindow.isVisible()) return;
+                Gdx.app.log("debug", "SUUSUSUSUSUSSUSUUS");
+                activateWindow(pauseWindow);
+            }
+        });
         gameBar.add(pauseButton).width(100).expandY();
 
         Table gameTable = new Table();
@@ -61,8 +71,28 @@ public class GameProcess {
             }
         });
         waitWindow.setMovable(false);
-        windowTable.add(waitWindow).minSize(200);
+        activateWindow(waitWindow);
         updatePlayerCounter();
+
+        pauseWindow = new PauseWindow("Game paused", new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                deactivateWindow(pauseWindow);
+            }
+        }, new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                deactivateWindow(pauseWindow);
+
+                Request request = new Request();
+                request.requestType = RequestType.LeaveRoom;
+                GameManager.getInstance().client.sendTCP(request);
+
+                GameManager.getInstance().setMenuScreen();
+            }
+        });
+        pauseWindow.setMovable(false);
+        pauseWindow.setVisible(false);
 
         listener = new Listener() {
             @Override
@@ -75,6 +105,20 @@ public class GameProcess {
         Client client = GameManager.getInstance().client;
         client.addListener(listener);
         client.sendTCP(new Request(RequestType.JoinRoom, gameType));
+    }
+
+    public void activateWindow(Window window) {
+        window.setVisible(true);
+        windowTable.clearChildren();
+        windowTable.setVisible(true);
+        Gdx.app.log("debug", "MOBUS");
+        windowTable.add(window).minSize(200);
+    }
+
+    public void deactivateWindow(Window window) {
+        window.setVisible(false);
+        windowTable.clearChildren();
+        windowTable.setVisible(false);
     }
 
     private void createUI(Stage stage) {
@@ -101,7 +145,7 @@ public class GameProcess {
             case GameStarted: {
                 if (response.success) {
                     fetchGameState((GameState) response.data);
-                    windowTable.setVisible(false);
+                    deactivateWindow(waitWindow);
                     Gdx.app.log("debug", "Game started");
                 }
                 break;
@@ -130,7 +174,7 @@ public class GameProcess {
     }
 
     public void render(float delta) {
-        if (gameState.isGameStarted() && windowTable.isVisible()) windowTable.setVisible(false);
+        if (gameState.isGameStarted() && waitWindow.isVisible()) deactivateWindow(waitWindow);
         gameRenderer.render(delta);
     }
 
@@ -161,11 +205,13 @@ public class GameProcess {
         Actions sequence = gameState.playerJoined(player);
         gameRenderer.makeActions(sequence);
     }
+
     public void playerLeft(Player player) {
         gameState.removePlayer(player.id);
         Actions sequence = gameState.playerLeft(player);
         gameRenderer.makeActions(sequence);
     }
+
     public void fetchGameState(GameState gameState) {
         this.gameState = gameState; // TODO: not safe
         gameRenderer.loadFromState(gameState);
