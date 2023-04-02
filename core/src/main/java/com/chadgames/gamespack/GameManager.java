@@ -51,8 +51,7 @@ public class GameManager extends Game {
 
     public void connect() {
         try {
-            client.connect(5000, Network.IP, Network.PORT);
-
+            Gdx.app.log("network", "Trying to connect to " + Network.IP);
             client.addListener(new Listener() {
                 @Override
                 public void connected(Connection connection) {
@@ -67,6 +66,7 @@ public class GameManager extends Game {
                     Gdx.app.log("network", "Disconnected from server");
                 }
             });
+            client.connect(5000, Network.IP, Network.PORT);
 
         } catch (IOException e) {
             Gdx.app.log("network", "Failed to connect to server");
