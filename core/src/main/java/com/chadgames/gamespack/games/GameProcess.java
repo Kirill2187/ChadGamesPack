@@ -63,33 +63,34 @@ public class GameProcess {
         windowTable.setFillParent(true);
         stage.addActor(windowTable);
 
-        waitWindow = new WaitWindow("Waiting for players...", new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                tryStartGame();
-            }
-        });
-        waitWindow.setMovable(false);
-        activateWindow(waitWindow);
-        updatePlayerCounter();
 
-        pauseWindow = new PauseWindow("Game paused", new ClickListener() {
+        ClickListener leaveListener = new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                deactivateWindow(pauseWindow);
-            }
-        }, new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                deactivateWindow(pauseWindow);
-
                 Request request = new Request();
                 request.requestType = RequestType.LeaveRoom;
                 GameManager.getInstance().client.sendTCP(request); // TODO: move to game manager
 
                 GameManager.getInstance().setMenuScreen();
             }
-        });
+        };
+        waitWindow = new WaitWindow("Waiting for players...", new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                tryStartGame();
+            }
+        }, leaveListener);
+        waitWindow.setMovable(false);
+        activateWindow(waitWindow);
+        updatePlayerCounter();
+
+
+        pauseWindow = new PauseWindow("Game paused", new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                deactivateWindow(pauseWindow);
+            }
+        }, leaveListener);
         pauseWindow.setMovable(false);
         pauseWindow.setVisible(false);
 
@@ -230,7 +231,6 @@ public class GameProcess {
 
     public void dispose() {
         GameManager.getInstance().client.removeListener(listener);
-        Gdx.app.log("debug", "DISPOSED GAME PROCESS");
     }
 
     public int getMyPlayerId() {

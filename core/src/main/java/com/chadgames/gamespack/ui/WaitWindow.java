@@ -12,13 +12,14 @@ public class WaitWindow extends Window {
 
     Label playerCount;
     TextButton startButton;
+    TextButton leaveButton;
 
-    public WaitWindow(String title, ClickListener startListener) {
+    public WaitWindow(String title, ClickListener startListener, ClickListener leaveListener) {
         super(title, GameManager.getInstance().skin, "default");
-        createUI(startListener);
+        createUI(startListener, leaveListener);
     }
 
-    public void createUI(ClickListener startListener) {
+    public void createUI(ClickListener startListener, ClickListener leaveListener) {
         Skin skin = GameManager.getInstance().skin;
 
         Table root = new Table();
@@ -32,6 +33,10 @@ public class WaitWindow extends Window {
         startButton = new TextButton("Start", skin);
         root.add(startButton).growX().padRight(10).padLeft(10).padBottom(10).row();
         startButton.addListener(startListener);
+
+        leaveButton = new TextButton("Leave", skin);
+        root.add(leaveButton).growX().padRight(10).padLeft(10).padBottom(10).row();
+        leaveButton.addListener(leaveListener);
     }
 
     public void setPlayerCount(int count, int max, boolean allowedToStart) {
