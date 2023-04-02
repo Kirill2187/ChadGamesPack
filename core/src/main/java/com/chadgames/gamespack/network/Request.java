@@ -3,6 +3,7 @@ package com.chadgames.gamespack.network;
 public class Request {
     public RequestType requestType;
     public Object data;
+    public Request() {}
     public Request(RequestType requestType) {
         this.requestType = requestType;
     }
