@@ -80,4 +80,12 @@ public class GameManager extends Game {
     public void asyncConnect() {
         new Thread(this::connect).start();
     }
+
+    public void changeUsername(String newUsername) {
+        Gdx.app.log("network", String.format("Changing username to %s", newUsername));
+        Request request = new Request();
+        request.requestType = RequestType.ChangeUsername;
+        request.data = newUsername;
+        client.sendTCP(request);
+    }
 }
