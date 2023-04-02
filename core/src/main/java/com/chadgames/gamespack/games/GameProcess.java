@@ -47,8 +47,7 @@ public class GameProcess {
         pauseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                if (waitWindow.isVisible()) return;
-                Gdx.app.log("debug", "SUUSUSUSUSUSSUSUUS");
+                if (waitWindow.isVisible()) return;
                 activateWindow(pauseWindow);
             }
         });
@@ -111,7 +110,6 @@ public class GameProcess {
         window.setVisible(true);
         windowTable.clearChildren();
         windowTable.setVisible(true);
-        Gdx.app.log("debug", "MOBUS");
         windowTable.add(window).minSize(200);
     }
 
