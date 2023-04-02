@@ -128,4 +128,12 @@ public class Room {
     public GameProperties getProperties() {
         return gameProperties;
     }
+
+
+    public void reset() {
+        isActive = false;
+        curPlayerId = 0;
+        adminId = -1;
+        gameState = Constants.GAME_FACTORIES.get(gameType).createState();
+    }
 }

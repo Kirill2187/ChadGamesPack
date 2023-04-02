@@ -49,4 +49,11 @@ public abstract class GameState {
             finishGame();
         }
     }
+
+    public void reset() {
+        gameStarted = false;
+        gameFinished = false;
+        players = new HashMap<>();
+
+    }
 }

@@ -2,6 +2,7 @@ package com.chadgames.gamespack.server;
 
 import com.chadgames.gamespack.games.GameState;
 import com.chadgames.gamespack.games.GameType;
+import com.chadgames.gamespack.network.PlayerAndRoomId;
 import com.chadgames.gamespack.network.Response;
 import com.chadgames.gamespack.network.ResponseType;
 
@@ -46,9 +47,12 @@ public class RoomManager {
         GameState gameState = rooms.get(roomId).getGameState();
         if (gameState.isGameFinished()) {
             LOGGER.fine("Game in room " + roomId + " finished, winnerId is " + gameState.getWinner());
-            rooms.get(roomId).sendToAll(
+            Room room = rooms.get(roomId);
+            room.sendToAll(
                     new Response(true, ResponseType.GameFinished, gameState.getWinner())
             );
+            kick_all(room);
+            room.reset();
             return true;
         }
         return false;
@@ -73,6 +77,7 @@ public class RoomManager {
 
     public void joinRoom(int roomId, User user) {
         Room room = rooms.get(roomId);
+        LOGGER.warning(String.valueOf(room.isActive()));
         boolean activeBefore = room.isActive();
         room.join(user); // After this call user.player must be initialized and assigned an id
         assert user.player != null;
@@ -81,7 +86,7 @@ public class RoomManager {
         LOGGER.finer("User " + user.getUsername() + " assigned id " + user.player.id);
 
         user.getConnection().sendTCP(
-                new Response(true, ResponseType.PlayerIdAssigned, user.player.id)
+                new Response(true, ResponseType.PlayerIdAssigned, new PlayerAndRoomId(user.player.id, roomId))
         );
         user.getConnection().sendTCP(
                 new Response(true, ResponseType.FetchGameState, room.getGameState())
@@ -92,6 +97,8 @@ public class RoomManager {
                 new Response(true, ResponseType.UserJoined, user.player), user.getUserId()
         );
         boolean activeAfter = room.isActive();
+        LOGGER.warning(String.valueOf(activeBefore));
+        LOGGER.warning(String.valueOf(activeAfter));
         if (activeAfter && !activeBefore) {
             room.sendToAll(new Response(true, ResponseType.GameStarted, room.getGameState()));
         }
@@ -128,8 +135,16 @@ public class RoomManager {
             if (!wasFinished) checkWinnerAndNotify(ejectRoomId);
 
             if (ejectRoom.size() == 0) {
-                deleteRoom(ejectRoomId);
+// Do not delete since we need to allow to restart in the same room
+//                deleteRoom(ejectRoomId);
             }
         }
     }
+    public void kick_all(Room room) {
+        LOGGER.fine("Kick everyone");
+        while (!room.getUsers().isEmpty()) {
+            leaveRoom(room.getUsers().get(room.getUsers().size() - 1));
+        }
+    }
+
 }

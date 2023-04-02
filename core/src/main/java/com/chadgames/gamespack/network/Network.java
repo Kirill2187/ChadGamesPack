@@ -38,6 +38,7 @@ public final class Network {
         kryo.register(Symbol[][].class);
         kryo.register(Symbol[].class);
         kryo.register(TicTacToeState.class);
+        kryo.register(PlayerAndRoomId.class);
     }
 
 }

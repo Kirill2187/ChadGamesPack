@@ -1,6 +1,5 @@
 package com.chadgames.gamespack.ui;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -8,16 +7,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.chadgames.gamespack.GameManager;
 
-public class PauseWindow extends Window {
-    TextButton resumeButton;
+public class GameOverWindow extends Window {
+    TextButton restartButton;
     TextButton menuButton;
 
-    public PauseWindow(String title, ClickListener resumeListener, ClickListener menuListener) {
+    public GameOverWindow(String title, ClickListener restartListener, ClickListener menuListener) {
         super(title, GameManager.getInstance().skin, "default");
-        createUI(resumeListener, menuListener);
+        createUI(restartListener, menuListener);
     }
 
-    public void createUI(ClickListener resumeListener, ClickListener menuListener) {
+    public void createUI(ClickListener restartListener, ClickListener menuListener) {
         Skin skin = GameManager.getInstance().skin;
 
         Table root = new Table();
@@ -25,9 +24,9 @@ public class PauseWindow extends Window {
         root.bottom();
         addActor(root);
 
-        resumeButton = new TextButton("Resume", skin);
-        root.add(resumeButton).growX().padRight(10).padLeft(10).padBottom(10).row();
-        resumeButton.addListener(resumeListener);
+        restartButton = new TextButton("Restart", skin);
+        root.add(restartButton).growX().padRight(10).padLeft(10).padBottom(10).row();
+        restartButton.addListener(restartListener);
 
         menuButton = new TextButton("Leave", skin);
         root.add(menuButton).growX().padRight(10).padLeft(10).padBottom(10).row();

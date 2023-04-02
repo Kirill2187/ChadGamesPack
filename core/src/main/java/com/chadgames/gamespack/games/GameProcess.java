@@ -9,9 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.chadgames.gamespack.GameManager;
+import com.chadgames.gamespack.network.PlayerAndRoomId;
 import com.chadgames.gamespack.network.Request;
 import com.chadgames.gamespack.network.RequestType;
 import com.chadgames.gamespack.network.Response;
+import com.chadgames.gamespack.ui.GameOverWindow;
 import com.chadgames.gamespack.ui.PauseWindow;
 import com.chadgames.gamespack.ui.WaitWindow;
 import com.chadgames.gamespack.utils.Constants;
@@ -26,10 +28,12 @@ public class GameProcess {
     private Table windowTable;
     private WaitWindow waitWindow;
     private PauseWindow pauseWindow;
+    private GameOverWindow gameOverWindow;
     private GameState gameState;
     private GameType gameType;
     private Listener listener;
     private int myPlayerId;
+    private int myRoomId;
 
     public GameProcess(GameType gameType, Stage stage, SpriteBatch batch) {
         this.gameType = gameType;
@@ -90,6 +94,18 @@ public class GameProcess {
         }, leaveListener);
         pauseWindow.setMovable(false);
         pauseWindow.setVisible(false);
+
+        gameOverWindow = new GameOverWindow("Game over", new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                deactivateWindow(gameOverWindow);
+                GameManager.sendRequest(RequestType.JoinRoom, myRoomId);
+                gameState.gameStarted = false;
+                activateWindow(waitWindow);
+            }
+        }, leaveListener);
+        gameOverWindow.setMovable(true);
+        gameOverWindow.setVisible(false);
 
         listener = new Listener() {
             @Override
@@ -153,7 +169,9 @@ public class GameProcess {
                 break;
             }
             case PlayerIdAssigned: {
-                myPlayerId = (int) response.data;
+                PlayerAndRoomId ids = (PlayerAndRoomId) response.data;
+                myPlayerId = ids.playerId;
+                myRoomId = ids.roomId;
                 Gdx.app.log("debug", "My player id is " + myPlayerId);
                 break;
             }
@@ -164,6 +182,7 @@ public class GameProcess {
                     gameState.finishGame();
                     // TODO: notify renderer
                 }
+                activateWindow(gameOverWindow); // TODO: show window not immediately but after 2s
                 break;
             }
         }
