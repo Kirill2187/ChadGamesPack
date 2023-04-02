@@ -24,6 +24,8 @@ public class GameManager extends Game {
     public Client client;
     private MenuScreen menuScreen;
 
+    public MyAssetManager assetManager;
+
     public static GameManager getInstance() {
         return instance;
     }
@@ -35,19 +37,30 @@ public class GameManager extends Game {
         client.start();
         Network.registerClasses(client);
     }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        assetManager.dispose();
+        if (client.isConnected()) client.close();
+        if (menuScreen != null) menuScreen.dispose();
+    }
+
     private String generateDefaultUsername() {
         int randomNum = ThreadLocalRandom.current().nextInt(1000, 10000);
-        return "Chad" + Integer.toString(randomNum);
+        return "Chad" + randomNum;
     }
 
     @Override
     public void create() {
-        skin = new Skin(Gdx.files.internal("ui/skin/flat-earth-ui.json")); // TODO: replace with custom skin
+        assetManager = new MyAssetManager();
+        skin = assetManager.getSkin();
         asyncConnect();
         setMenuScreen();
     }
 
     public void launchGame(GameType gameType) {
+        assetManager.load(gameType);
         setScreen(new GameScreen(gameType));
     }
 
