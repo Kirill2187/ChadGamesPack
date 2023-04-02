@@ -67,10 +67,7 @@ public class GameProcess {
         ClickListener leaveListener = new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Request request = new Request();
-                request.requestType = RequestType.LeaveRoom;
-                GameManager.getInstance().client.sendTCP(request); // TODO: move to game manager
-
+                GameManager.sendRequest(RequestType.LeaveRoom);
                 GameManager.getInstance().setMenuScreen();
             }
         };
@@ -104,7 +101,7 @@ public class GameProcess {
         };
         Client client = GameManager.getInstance().client;
         client.addListener(listener);
-        client.sendTCP(new Request(RequestType.JoinRoom, gameType));
+        GameManager.sendRequest(RequestType.JoinRoom, gameType);
     }
 
     public void activateWindow(Window window) {
@@ -186,10 +183,7 @@ public class GameProcess {
     }
 
     public void sendMoveToServer(MoveData moveData) {
-        Request request = new Request();
-        request.requestType = RequestType.SendMove;
-        request.data = moveData;
-        GameManager.getInstance().client.sendTCP(request);
+        GameManager.sendRequest(RequestType.SendMove, moveData);
     }
 
     /* When renderer receives user input, move should be also sent to server */
@@ -217,9 +211,7 @@ public class GameProcess {
     }
 
     public void tryStartGame() {
-        Request request = new Request();
-        request.requestType = RequestType.StartGame;
-        GameManager.getInstance().client.sendTCP(request);
+        GameManager.sendRequest(RequestType.StartGame);
     }
 
     public void updatePlayerCounter() {

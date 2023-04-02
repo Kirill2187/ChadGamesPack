@@ -71,10 +71,7 @@ public class GameManager extends Game {
                 @Override
                 public void connected(Connection connection) {
                     Gdx.app.log("network", "Connected to server");
-                    Request request = new Request();
-                    request.requestType = RequestType.RegisterUser;
-                    request.data = username;
-                    client.sendTCP(request);
+                    sendRequest(RequestType.RegisterUser, username);
                 }
                 @Override
                 public void disconnected(Connection connection) {
@@ -98,10 +95,7 @@ public class GameManager extends Game {
 
     public void changeUsername(String newUsername) {
         Gdx.app.log("network", String.format("Changing username to %s", newUsername));
-        Request request = new Request();
-        request.requestType = RequestType.ChangeUsername;
-        request.data = newUsername;
-        client.sendTCP(request);
+        sendRequest(RequestType.ChangeUsername, newUsername);
     }
 
     public void setMenuScreen() {
@@ -111,5 +105,12 @@ public class GameManager extends Game {
             getScreen().dispose();
         }
         setScreen(menuScreen);
+    }
+
+    public static void sendRequest(RequestType requestType) {
+        getInstance().client.sendTCP(new Request(requestType));
+    }
+    public static void sendRequest(RequestType requestType, Object data) {
+        getInstance().client.sendTCP(new Request(requestType, data));
     }
 }
