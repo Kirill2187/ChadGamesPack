@@ -40,21 +40,6 @@ public class MenuScreen implements Screen {
         Label testLabel = new Label("Test", skin, "title");
         root.add(testLabel).expandX().row();
 
-        Table usernameTable = new Table();
-        usernameTable.setColor(0, 0, 0, 0.5f);
-        TextField nickTextField = new TextField(GameManager.getInstance().username, skin);
-        usernameTable.add(nickTextField).padRight(5).growX().minWidth(100);
-
-        TextButton setUsername = new TextButton("Set", skin);
-        setUsername.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                GameManager.getInstance().changeUsername(nickTextField.getText());
-            }
-        });
-        usernameTable.add(setUsername);
-        root.add(usernameTable).expandY().row();
-
         Table gamesTable = new Table();
         gamesTable.setColor(0, 0, 0, 0.5f);
         gamesTable.add(new Label("Games", skin)).expandX().row();
@@ -83,6 +68,20 @@ public class MenuScreen implements Screen {
         bottomTable.add(tttButton);
 
         root.add(bottomTable).fillX().padLeft(10).padRight(10).padBottom(5).row();
+
+        Table usernameTable = new Table();
+        TextField nickTextField = new TextField(GameManager.getInstance().username, skin);
+        usernameTable.add(nickTextField).padRight(5).growX().minWidth(100);
+
+        TextButton setUsername = new TextButton("Set", skin);
+        setUsername.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                GameManager.getInstance().changeUsername(nickTextField.getText());
+            }
+        });
+        usernameTable.add(setUsername);
+        root.add(usernameTable).expandX().padLeft(10).padRight(10).row();
     }
 
     @Override
