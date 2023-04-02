@@ -6,6 +6,8 @@ import com.chadgames.gamespack.network.Response;
 import com.chadgames.gamespack.network.ResponseType;
 
 import java.util.HashMap;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RoomManager {
@@ -13,6 +15,13 @@ public class RoomManager {
     private int curRoomId = 0;
     private static final Logger LOGGER = Logger.getLogger(RoomManager.class.getName());
 
+    RoomManager() {
+        LOGGER.setUseParentHandlers(false);
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setLevel(Level.ALL);
+        LOGGER.setLevel(Level.ALL);
+        LOGGER.addHandler(handler);
+    }
     private int getAccessibleRoomIdByType(GameType gameType) {
         for (int key : rooms.keySet()) {
             Room cur = rooms.get(key);
