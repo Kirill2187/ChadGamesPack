@@ -6,23 +6,24 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.chadgames.gamespack.GameManager;
+import com.chadgames.gamespack.games.GameType;
 
 public class TicTacToeCell extends Actor {
     public int x;
     public int y;
     public Symbol symbol;
 
-    Texture X;
-    Texture O;
-    public Sprite sprite;
+    Sprite sprite;
 
     public void setSymbol(Symbol symbol) {
         this.symbol = symbol;
         if (symbol == Symbol.X) {
-            sprite.setTexture(X);
+            sprite = GameManager.getInstance().assetManager.getSprite(GameType.TicTacToe, "x");
         } else if (symbol == Symbol.O) {
-            sprite.setTexture(O);
+            sprite = GameManager.getInstance().assetManager.getSprite(GameType.TicTacToe, "o");
         }
+        sprite.setSize(getWidth(), getHeight());
     }
 
     public TicTacToeCell(int x, int y) {
@@ -31,11 +32,7 @@ public class TicTacToeCell extends Actor {
         this.y = y;
         this.symbol = Symbol.EMPTY;
 
-        // TODO: get textures from somewhere else, do not initialize them here
-        X = new Texture(Gdx.files.internal("games/tictactoe/x.png"));
-        O = new Texture(Gdx.files.internal("games/tictactoe/o.png"));
-        sprite = new Sprite(X);
-
+        sprite = new Sprite();
         sprite.setPosition(getX(), getY());
         sprite.setSize(getWidth(), getHeight());
     }

@@ -2,6 +2,8 @@ package com.chadgames.gamespack.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -14,7 +16,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.chadgames.gamespack.GameManager;
+import com.chadgames.gamespack.MyAssetManager;
 import com.chadgames.gamespack.games.GameType;
+import com.chadgames.gamespack.ui.GameButton;
+import com.chadgames.gamespack.utils.Constants;
 
 /** First screen of the application. Displayed after the application is created. */
 public class MenuScreen implements Screen {
@@ -40,33 +45,8 @@ public class MenuScreen implements Screen {
         root.add(testLabel).expandX().row();
 
         Table gamesTable = new Table();
-        gamesTable.setColor(0, 0, 0, 0.5f);
-        gamesTable.add(new Label("Games", skin)).expandX().row();
         root.add(gamesTable).expandY().row();
-
-        Table bottomTable = new Table();
-
-        TextButton chatButton = new TextButton("Chat", skin);
-        chatButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                GameManager.getInstance().launchGame(GameType.Chat);
-            }
-        });
-        bottomTable.add(chatButton);
-
-        bottomTable.add(new Table()).expandX().fillX();
-
-        TextButton tttButton = new TextButton("TTT", skin);
-        tttButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                GameManager.getInstance().launchGame(GameType.TicTacToe);
-            }
-        });
-        bottomTable.add(tttButton);
-
-        root.add(bottomTable).fillX().padLeft(10).padRight(10).padBottom(5).row();
+        createGameTable(gamesTable);
 
         Table usernameTable = new Table();
         TextField nickTextField = new TextField(GameManager.getInstance().username, skin);
@@ -81,6 +61,20 @@ public class MenuScreen implements Screen {
         });
         usernameTable.add(setUsername);
         root.add(usernameTable).expandX().padLeft(10).padRight(10).row();
+    }
+
+    void createGameTable(Table gameTable) {
+        MyAssetManager manager = GameManager.getInstance().assetManager;
+        for (GameType gameType : GameType.values()) {
+            GameButton button = new GameButton(manager.getIcon(gameType.name().toLowerCase()),
+            gameType.name(), new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    GameManager.getInstance().launchGame(gameType);
+                }
+            });
+            gameTable.add(button).pad(5);
+        }
     }
 
     @Override

@@ -5,11 +5,11 @@ public class GameProperties {
     private final int autostartPlayers;
     private final int maxPlayers;
     private final boolean canJoinWhenStarted;
-    public GameProperties(int x1, int x2, int x3, boolean x4) {
-        minPlayers = x1;
-        autostartPlayers = x2;
-        maxPlayers = x3;
-        canJoinWhenStarted = x4;
+    public GameProperties(int minPlayers, int autostartPlayers, int maxPlayers, boolean canJoinWhenStarted) {
+        this.minPlayers = minPlayers;
+        this.autostartPlayers = autostartPlayers;
+        this.maxPlayers = maxPlayers;
+        this.canJoinWhenStarted = canJoinWhenStarted;
     }
 
     public int getMinPlayers() {
