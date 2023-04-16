@@ -4,4 +4,8 @@ import com.chadgames.gamespack.games.MoveData;
 
 public class ChatMoveData extends MoveData {
     String message;
+    public ChatMoveData(int playerId, String message) {
+        this.playerId = playerId;
+        this.message = message;
+    }
 }

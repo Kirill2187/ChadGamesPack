@@ -1,13 +1,22 @@
 package com.chadgames.gamespack.games;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.chadgames.gamespack.GameManager;
 import com.chadgames.gamespack.network.PlayerAndRoomId;
 import com.chadgames.gamespack.network.Request;
@@ -45,7 +54,7 @@ public class GameProcess {
         stage.addActor(root);
 
         Table gameBar = new Table();
-        root.add(gameBar).expandX().height(50).row();
+        root.add(gameBar).expandX().top().right().row();
 
         TextButton pauseButton = new TextButton("||", GameManager.getInstance().skin); // TODO: replace with ImageButton
         pauseButton.addListener(new ClickListener() {
@@ -55,7 +64,54 @@ public class GameProcess {
                 activateWindow(pauseWindow);
             }
         });
-        gameBar.add(pauseButton).width(100).expandY();
+        gameBar.add(pauseButton).width(50).padTop(5).padRight(10);
+
+        Table rootTop = new Table();
+        rootTop.debugAll();
+        rootTop.setFillParent(true);
+        rootTop.top();
+        stage.addActor(rootTop);
+
+        Table cpy = new Table();
+        rootTop.add(cpy).expandX().top().left();
+        TextButton playerListButton = new TextButton("Players", GameManager.getInstance().skin); // TODO: replace with ImageButton
+        playerListButton.getLabel().setFontScale(0.5f, 0.5f);
+
+        Table playerListTable = new Table();
+        Color[] colors = {Color.CORAL, Color.ORANGE, Color.BROWN, Color.CHARTREUSE};
+        playerListButton.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                playerListButton.getLabel().setText("X");
+
+                Player[] players = gameState.players.values().toArray(new Player[0]);
+
+                Pixmap labelColor = new Pixmap(1, 1, Pixmap.Format.RGB888);
+                for (int i = 0; i < players.length; ++i) {
+                    Label new_label = new Label(players[i].username, GameManager.getInstance().skin);
+                    Label.LabelStyle style = new Label.LabelStyle(new_label.getStyle());
+                    style.fontColor = Color.WHITE;
+                    new_label.setStyle(style);
+                    labelColor.setColor(colors[i % 4]);
+                    labelColor.fill();
+                    new_label.getStyle().background = new Image(new Texture(labelColor)).getDrawable();
+
+                    playerListTable.add(new_label).bottom().row();
+                }
+                labelColor.dispose();
+
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                playerListButton.getLabel().setText("Players");
+                playerListTable.clearChildren(false);
+            }
+        });
+        cpy.add(playerListButton).width(50).padTop(5).padLeft(10).left();
+        cpy.row();
+        cpy.add(playerListTable).right().padTop(5).padLeft(10);
 
         Table gameTable = new Table();
         root.add(gameTable).expand().fill().row();
