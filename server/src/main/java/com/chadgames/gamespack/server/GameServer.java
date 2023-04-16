@@ -63,6 +63,74 @@ public class GameServer {
         LOGGER.info("Game server started!");
     }
 
+    private void RequestRegisterUser(MyConnection connection, Request request) {
+        String username = (String) request.data;
+        int userId = registerUser(connection, username);
+        LOGGER.fine(String.format("User %s registered, given id=%d", username, userId));
+    }
+
+    private void RequestChangeUsername(MyConnection connection, Request request) {
+        if (roomManager.getRoomIdByUserId(connection.userId) != -1) return;
+        String newUsername = (String) request.data;
+        LOGGER.finer(String.format("User %s changed username to %s", connection.username, newUsername));
+        connection.username = newUsername;
+    }
+
+    private void RequestJoinRoom(MyConnection connection, Request request) {
+        int userId = connection.userId;
+        User user = getUserById(userId);
+        if (request.data instanceof GameType) {
+            GameType gameType = (GameType) request.data;
+            roomManager.joinSomeRoom(gameType, user);
+        } else {
+            int roomId = (int) request.data;
+            if (roomManager.isThereRoomWithId(roomId) && !roomManager.getRoomById(roomId).isFull()) {
+                roomManager.joinRoom(roomId, user);
+            } else {
+                user.getConnection().sendTCP(
+                        new Response(false, ResponseType.UserJoined, null)
+                );
+            }
+        }
+    }
+
+    private void RequestCreateRoom(MyConnection connection, Request request) {
+        roomManager.joinNewRoom((GameType) request.data, getUserById(connection.userId));
+    }
+
+    private void RequestStartGame(MyConnection connection, Request request) {
+        int roomId = roomManager.getRoomIdByUserId(connection.userId);
+        if (roomManager.getRoomById(roomId).startGame(connection.userId)) {
+            roomManager.getRoomById(roomId).sendToAll(new Response(true, ResponseType.GameStarted, roomManager.getRoomById(roomId).getGameState()));
+        } else {
+            connection.sendTCP(new Response(false, ResponseType.GameStarted, null));
+        }
+    }
+
+    private void RequestSendMove(MyConnection connection, Request request) {
+        int roomId = roomManager.getRoomIdByUserId(connection.userId);
+        boolean success = false;
+        if (roomId != -1) {
+            success = roomManager.getRoomById(roomId).makeMove((MoveData) request.data);
+        }
+        if (success) {
+            roomManager.getRoomById(roomId).sendToAllExcept(
+                    new Response(true, ResponseType.FetchMove, request.data),
+                    connection.userId
+            );
+            roomManager.checkWinnerAndNotify(roomId);
+        } else {
+            connection.sendTCP(
+                    new Response(false, ResponseType.FetchGameState, roomManager.getRoomById(roomId).getGameState())
+            );
+        }
+        // TODO: check if game finished
+    }
+
+    private void RequestLeaveRoom(MyConnection connection, Request request) {
+        roomManager.leaveRoom(getUserById(connection.userId));
+    }
+
     public void processRequest(MyConnection connection, Request request) {
         if (request == null) return;
         if (!connection.registered && request.requestType != RequestType.RegisterUser) {
@@ -72,71 +140,31 @@ public class GameServer {
 
         switch (request.requestType) {
             case RegisterUser: {
-                String username = (String) request.data;
-                int userId = registerUser(connection, username);
-                LOGGER.fine(String.format("User %s registered, given id=%d", username, userId));
+                RequestRegisterUser(connection, request);
                 break;
             }
             case ChangeUsername: {
-                if (roomManager.getRoomIdByUserId(connection.userId) != -1) break;
-                String newUsername = (String) request.data;
-                LOGGER.finer(String.format("User %s changed username to %s", connection.username, newUsername));
-                connection.username = newUsername;
+                RequestChangeUsername(connection, request);
                 break;
             }
             case JoinRoom: {
-                int userId = connection.userId;
-                User user = getUserById(userId);
-                if (request.data instanceof GameType) {
-                    GameType gameType = (GameType) request.data;
-                    roomManager.joinSomeRoom(gameType, user);
-                } else {
-                    int roomId = (int) request.data;
-                    if (roomManager.isThereRoomWithId(roomId) && !roomManager.getRoomById(roomId).isFull()) {
-                        roomManager.joinRoom(roomId, user);
-                    } else {
-                        user.getConnection().sendTCP(
-                                new Response(false, ResponseType.UserJoined, null)
-                        );
-                    }
-                }
+                RequestJoinRoom(connection, request);
                 break;
             }
             case CreateRoom: {
-                roomManager.joinNewRoom((GameType) request.data, getUserById(connection.userId));
+                RequestCreateRoom(connection, request);
                 break;
             }
             case StartGame: {
-                int roomId = roomManager.getRoomIdByUserId(connection.userId);
-                if (roomManager.getRoomById(roomId).startGame(connection.userId)) {
-                    roomManager.getRoomById(roomId).sendToAll(new Response(true, ResponseType.GameStarted, roomManager.getRoomById(roomId).getGameState()));
-                } else {
-                    connection.sendTCP(new Response(false, ResponseType.GameStarted, null));
-                }
+                RequestStartGame(connection, request);
                 break;
             }
             case SendMove: {
-                int roomId = roomManager.getRoomIdByUserId(connection.userId);
-                boolean success = false;
-                if (roomId != -1) {
-                    success = roomManager.getRoomById(roomId).makeMove((MoveData) request.data);
-                }
-                if (success) {
-                    roomManager.getRoomById(roomId).sendToAllExcept(
-                            new Response(true, ResponseType.FetchMove, request.data),
-                            connection.userId
-                    );
-                    roomManager.checkWinnerAndNotify(roomId);
-                } else {
-                    connection.sendTCP(
-                            new Response(false, ResponseType.FetchGameState, roomManager.getRoomById(roomId).getGameState())
-                    );
-                }
-                // TODO: check if game finished
+                RequestSendMove(connection, request);
                 break;
             }
             case LeaveRoom: {
-                roomManager.leaveRoom(getUserById(connection.userId));
+                RequestLeaveRoom(connection, request);
                 break;
             }
         }
