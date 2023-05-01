@@ -23,9 +23,10 @@ import com.chadgames.gamespack.network.Network;
 public class ChatRenderer extends GameRenderer {
 
     private Label receivedMessages;
-    public ChatRenderer(GameProcess gameProcess, Table rootTable, SpriteBatch batch) {
-        super(gameProcess, rootTable, batch);
-        Gdx.app.log("debug", "Chat renderer created");
+    private Table rootTable;
+    public ChatRenderer(GameProcess gameProcess, Table rootTable) {
+        super(gameProcess);
+        this.rootTable = rootTable;
 
         createUI();
     }

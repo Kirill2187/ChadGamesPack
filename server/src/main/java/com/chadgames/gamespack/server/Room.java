@@ -38,22 +38,28 @@ public class Room {
         return false;
     }
 
-    public void leave(int userId) {
-        for (int i = 0; i < users.size(); ++i) {
-            if (users.get(i).getUserId() == userId) {
-                User user = users.get(i);
-                boolean adminLeft = user.getUserId() == adminId;
-
-                gameState.removePlayer(user.getPlayerId());
-                gameState.playerLeft(user.player);
-                gameState.updateWinner();
-
-                users.remove(i);
-                if (adminLeft && !users.isEmpty()) {
-                    adminId = users.get(0).getUserId();
-                }
-                return;
+    User getUserById(int userId) {
+        for (User user : users) {
+            if (user.getUserId() == userId) {
+                return user;
             }
+        }
+        return null;
+    }
+
+    public void leave(int userId) {
+        User user = getUserById(userId);
+        if (user == null) throw new RuntimeException("User not found in room");
+
+        boolean adminLeft = user.getUserId() == adminId;
+
+        gameState.removePlayer(user.getPlayerId());
+        gameState.playerLeft(user.player);
+        gameState.updateWinner();
+
+        users.remove(user);
+        if (adminLeft && !users.isEmpty()) {
+            adminId = users.get(0).getUserId();
         }
     }
 

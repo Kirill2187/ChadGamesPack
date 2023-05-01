@@ -46,8 +46,8 @@ public class TicTacToeState extends GameState {
 
     @Override
     public Actions playerLeft(Player player) {
-        Symbol s = playerToSymbol.get(player);
-        playerToSymbol.remove(player);
+        Symbol s = playerToSymbol.get(player.id);
+        playerToSymbol.remove(player.id);
         symbolToPlayer.remove(s);
         return null;
     }

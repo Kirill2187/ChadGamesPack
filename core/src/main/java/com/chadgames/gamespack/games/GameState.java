@@ -11,7 +11,7 @@ public abstract class GameState {
     protected boolean gameFinished = false;
 
     public Player getPlayerById(int id) {
-        assert players.containsKey(id);
+        if (!players.containsKey(id)) throw new RuntimeException("Player not found");
         return players.get(id);
     }
     public void addPlayer(Player player) {
@@ -54,6 +54,5 @@ public abstract class GameState {
         gameStarted = false;
         gameFinished = false;
         players = new HashMap<>();
-
     }
 }

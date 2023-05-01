@@ -27,7 +27,7 @@ public class WaitWindow extends Window {
         root.bottom();
         addActor(root);
 
-        playerCount = new Label("1 / 0", skin, "title");
+        playerCount = new Label("Connecting...", skin, "title");
         root.add(playerCount).expand().padRight(10).padLeft(10).padBottom(10).row();
 
         startButton = new TextButton("Start", skin);

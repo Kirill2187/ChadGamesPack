@@ -51,7 +51,7 @@ public class RoomManager {
             room.sendToAll(
                     new Response(true, ResponseType.GameFinished, gameState.getWinner())
             );
-            kick_all(room);
+            kickAll(room);
             room.reset();
             return true;
         }
@@ -77,7 +77,6 @@ public class RoomManager {
 
     public void joinRoom(int roomId, User user) {
         Room room = rooms.get(roomId);
-        LOGGER.warning(String.valueOf(room.isActive()));
         boolean activeBefore = room.isActive();
         room.join(user); // After this call user.player must be initialized and assigned an id
         assert user.player != null;
@@ -97,10 +96,9 @@ public class RoomManager {
                 new Response(true, ResponseType.UserJoined, user.player), user.getUserId()
         );
         boolean activeAfter = room.isActive();
-        LOGGER.warning(String.valueOf(activeBefore));
-        LOGGER.warning(String.valueOf(activeAfter));
         if (activeAfter && !activeBefore) {
             room.sendToAll(new Response(true, ResponseType.GameStarted, room.getGameState()));
+            LOGGER.fine("Game in room " + roomId + " started");
         }
     }
 
@@ -140,7 +138,7 @@ public class RoomManager {
             }
         }
     }
-    public void kick_all(Room room) {
+    public void kickAll(Room room) {
         LOGGER.fine("Kick everyone");
         while (!room.getUsers().isEmpty()) {
             leaveRoom(room.getUsers().get(room.getUsers().size() - 1));
