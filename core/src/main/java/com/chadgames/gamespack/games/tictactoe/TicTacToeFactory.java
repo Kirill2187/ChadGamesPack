@@ -16,7 +16,7 @@ public class TicTacToeFactory extends GameFactory {
     }
 
     @Override
-    public GameRenderer createRenderer(GameProcess gameProcess, Table rootTable, SpriteBatch batch) {
-        return new TicTacToeRenderer(gameProcess, rootTable, batch);
+    public GameRenderer createRenderer(GameProcess gameProcess) {
+        return new TicTacToeRenderer(gameProcess, gameProcess.getGameTable());
     }
 }

@@ -16,8 +16,8 @@ public class TicTacToeRenderer extends GameRenderer {
     private TicTacToeCell[][] cells =
         new TicTacToeCell[TicTacToeConstants.SIZE][TicTacToeConstants.SIZE];
 
-    public TicTacToeRenderer(GameProcess gameProcess, Table rootTable, SpriteBatch batch) {
-        super(gameProcess, rootTable, batch);
+    public TicTacToeRenderer(GameProcess gameProcess, Table rootTable) {
+        super(gameProcess);
 
         Table gameTable = new Table();
         gameTable.debugAll();
@@ -32,11 +32,7 @@ public class TicTacToeRenderer extends GameRenderer {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         TicTacToeCell cell = (TicTacToeCell) event.getListenerActor();
-                        TicTacToeMoveData moveData = new TicTacToeMoveData(
-                            cell.x, cell.y
-                        );
-                        moveData.playerId = gameProcess.getMyPlayerId();
-                        gameProcess.makeMoveAndSendToServer(moveData);
+                        cellClicked(cell);
                     }
                 });
             }
@@ -47,6 +43,14 @@ public class TicTacToeRenderer extends GameRenderer {
             .grow()
             .maxHeight(Value.percentWidth(1f, rootTable))
             .maxWidth(Value.percentHeight(1f, rootTable));
+    }
+
+    void cellClicked(TicTacToeCell cell) {
+        TicTacToeMoveData moveData = new TicTacToeMoveData(
+            cell.x, cell.y
+        );
+        moveData.playerId = gameProcess.getMyPlayerId();
+        gameProcess.makeMoveAndSendToServer(moveData);
     }
 
     @Override

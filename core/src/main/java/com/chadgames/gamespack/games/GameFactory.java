@@ -7,6 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 public abstract class GameFactory {
 
     public abstract GameState createState();
-    public abstract GameRenderer createRenderer(GameProcess gameProcess, Table rootTable, SpriteBatch batch);
+    public abstract GameRenderer createRenderer(GameProcess gameProcess);
 
 }

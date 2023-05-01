@@ -54,6 +54,5 @@ public abstract class GameState {
         gameStarted = false;
         gameFinished = false;
         players = new HashMap<>();
-
     }
 }

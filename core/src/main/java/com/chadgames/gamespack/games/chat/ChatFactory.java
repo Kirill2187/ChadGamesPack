@@ -15,7 +15,7 @@ public class ChatFactory extends GameFactory {
     }
 
     @Override
-    public GameRenderer createRenderer(GameProcess gameProcess, Table rootTable, SpriteBatch batch) {
-        return new ChatRenderer(gameProcess, rootTable, batch);
+    public GameRenderer createRenderer(GameProcess gameProcess) {
+        return new ChatRenderer(gameProcess, gameProcess.getGameTable());
     }
 }

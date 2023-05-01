@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.chadgames.gamespack.GameManager;
 import com.chadgames.gamespack.network.PlayerAndRoomId;
-import com.chadgames.gamespack.network.Request;
 import com.chadgames.gamespack.network.RequestType;
 import com.chadgames.gamespack.network.Response;
 import com.chadgames.gamespack.ui.GameOverWindow;
@@ -31,92 +30,30 @@ public class GameProcess {
     private GameOverWindow gameOverWindow;
     private GameState gameState;
     private GameType gameType;
-    private Listener listener;
+    private Listener clientListener;
     private int myPlayerId;
     private int myRoomId;
 
+    private Table gameTable;
+    public Table getGameTable() {
+        return gameTable;
+    }
+
+    private SpriteBatch batch;
+    public SpriteBatch getBatch() {
+        return batch;
+    }
+
     public GameProcess(GameType gameType, Stage stage, SpriteBatch batch) {
         this.gameType = gameType;
+        this.batch = batch;
         GameFactory gameFactory = Constants.GAME_FACTORIES.get(gameType);
 
-        Table root = new Table();
-        root.setFillParent(true);
-        root.debugAll();
-        stage.addActor(root);
-
-        Table gameBar = new Table();
-        root.add(gameBar).expandX().height(50).row();
-
-        TextButton pauseButton = new TextButton("||", GameManager.getInstance().skin); // TODO: replace with ImageButton
-        pauseButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (waitWindow.isVisible()) return;
-                activateWindow(pauseWindow);
-            }
-        });
-        gameBar.add(pauseButton).width(100).expandY();
-
-        Table gameTable = new Table();
-        root.add(gameTable).expand().fill().row();
-
+        createUI(stage);
         this.gameState = gameFactory.createState();
-        this.gameRenderer = gameFactory.createRenderer(this, gameTable, batch);
-
-        windowTable = new Table();
-        windowTable.setFillParent(true);
-        stage.addActor(windowTable);
-
-
-        ClickListener leaveListener = new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                GameManager.sendRequest(RequestType.LeaveRoom);
-                GameManager.getInstance().setMenuScreen();
-            }
-        };
-        waitWindow = new WaitWindow("Waiting for players...", new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                tryStartGame();
-            }
-        }, leaveListener);
-        waitWindow.setMovable(false);
-        activateWindow(waitWindow);
+        this.gameRenderer = gameFactory.createRenderer(this);
         updatePlayerCounter();
 
-
-        pauseWindow = new PauseWindow("Game paused", new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                deactivateWindow(pauseWindow);
-            }
-        }, leaveListener);
-        pauseWindow.setMovable(false);
-        pauseWindow.setVisible(false);
-
-        gameOverWindow = new GameOverWindow("Game over", new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                deactivateWindow(gameOverWindow);
-                GameManager.sendRequest(RequestType.JoinRoom, myRoomId);
-                gameState.gameStarted = false;
-                activateWindow(waitWindow);
-            }
-        }, leaveListener);
-        gameOverWindow.setMovable(true);
-        gameOverWindow.setVisible(false);
-
-        listener = new Listener() {
-            @Override
-            public void received(Connection connection, Object object) {
-                if (object instanceof Response) {
-                    processResponse((Response) object);
-                }
-            }
-        };
-        Client client = GameManager.getInstance().client;
-        client.addListener(listener);
         GameManager.sendRequest(RequestType.JoinRoom, gameType);
     }
 
@@ -134,7 +71,78 @@ public class GameProcess {
     }
 
     private void createUI(Stage stage) {
+        Table root = new Table();
+        root.setFillParent(true);
+        root.debugAll();
+        stage.addActor(root);
 
+        Table gameBar = new Table();
+        root.add(gameBar).expandX().height(50).row();
+
+        TextButton pauseButton = new TextButton("||", GameManager.getInstance().skin); // TODO: replace with ImageButton
+        pauseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (!canPause()) return;
+                activateWindow(pauseWindow);
+            }
+        });
+        gameBar.add(pauseButton).width(100).expandY();
+
+        gameTable = new Table();
+        root.add(gameTable).expand().fill().row();
+
+        windowTable = new Table();
+        windowTable.setFillParent(true);
+        stage.addActor(windowTable);
+
+        ClickListener leaveListener = new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                GameManager.sendRequest(RequestType.LeaveRoom);
+                GameManager.getInstance().setMenuScreen();
+            }
+        };
+        waitWindow = new WaitWindow("Waiting for players...", new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                tryStartGame();
+            }
+        }, leaveListener);
+        waitWindow.setMovable(false);
+        activateWindow(waitWindow);
+
+        pauseWindow = new PauseWindow("Game paused", new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                deactivateWindow(pauseWindow);
+            }
+        }, leaveListener);
+        pauseWindow.setMovable(false);
+        pauseWindow.setVisible(false);
+
+        gameOverWindow = new GameOverWindow("Game over", new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                deactivateWindow(gameOverWindow);
+                gameState.reset();
+                GameManager.sendRequest(RequestType.JoinRoom, myRoomId);
+                activateWindow(waitWindow);
+            }
+        }, leaveListener);
+        gameOverWindow.setMovable(true);
+        gameOverWindow.setVisible(false);
+
+        clientListener = new Listener() {
+            @Override
+            public void received(Connection connection, Object object) {
+                if (object instanceof Response) {
+                    processResponse((Response) object);
+                }
+            }
+        };
+        Client client = GameManager.getInstance().client;
+        client.addListener(clientListener);
     }
 
     public void processResponse(Response response) {
@@ -241,11 +249,15 @@ public class GameProcess {
     }
 
     public void dispose() {
-        GameManager.getInstance().client.removeListener(listener);
+        GameManager.getInstance().client.removeListener(clientListener);
     }
 
     public int getMyPlayerId() {
         return myPlayerId;
+    }
+
+    private boolean canPause() {
+        return gameState.isGameStarted() && !gameState.isGameFinished();
     }
 
 }
