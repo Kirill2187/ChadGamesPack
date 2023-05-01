@@ -18,11 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.chadgames.gamespack.GameManager;
 
-// GameButton contains
-// 1. Game logo (shrink when clicked)
-// 2. Game name
-// 3. Current online players
-
 public class GameButton extends Table {
 
     private Image logoImg;
@@ -40,7 +35,7 @@ public class GameButton extends Table {
         add(nameLabel).padRight(10).fill();
         nameLabel.setAlignment(Align.left);
 
-        onlinePlayersLabel = new Label("0", GameManager.getInstance().skin);
+        onlinePlayersLabel = new Label("?", GameManager.getInstance().skin);
         onlinePlayersLabel.setAlignment(Align.right);
         add(onlinePlayersLabel).padRight(10).fill();
 
