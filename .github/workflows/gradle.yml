@@ -27,3 +27,4 @@ jobs:
         cache: 'gradle'
     - run: ./gradlew core:test --no-daemon
     - run: ./gradlew server:test --no-daemon
+    - run: ./update.sh
