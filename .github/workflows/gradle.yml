@@ -13,9 +13,6 @@ on:
   pull_request:
     branches: [ "main", "dev" ]
 
-permissions:
-  contents: read
-
 jobs:
   build:
 
@@ -28,4 +25,5 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: 'gradle'
-    - run: ./gradlew test --no-daemon
+    - run: ./gradlew core:test --no-daemon
+    - run: ./gradlew server:test --no-daemon
