@@ -7,6 +7,7 @@ public class ExampleTest {
 
     @Test
     public void test() {
+        System.out.println("This is a server test");
         assertTrue(true);
     }
 

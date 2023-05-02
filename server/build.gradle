@@ -1,5 +1,10 @@
 apply plugin: 'application'
 
+test {
+  dependsOn cleanTest
+  testLogging.showStandardStreams = true
+}
+
 sourceCompatibility = 1.8
 mainClassName = 'com.chadgames.gamespack.server.ServerLauncher'
 eclipse.project.name = appName + '-server'
