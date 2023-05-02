@@ -80,6 +80,12 @@ public class ChatRenderer extends GameRenderer {
     @Override
     public void makeActions(Actions actions) {
         String current_message = ((ChatActions) actions).messageToAdd;
+        String edit_current_message = "";
+        String now = "";
+        for (int i = 0; i < current_message.length(); ++i) {
+            now += current_message.charAt(i);
+            Gdx.graphics.getWidth();
+        }
         receivedMessages.setText(receivedMessages.getText() + "\n" + current_message);
     }
 
