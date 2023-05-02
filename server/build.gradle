@@ -3,9 +3,14 @@ apply plugin: 'application'
 sourceCompatibility = 1.8
 mainClassName = 'com.chadgames.gamespack.server.ServerLauncher'
 eclipse.project.name = appName + '-server'
+sourceSets.test.java.srcDirs = ["src/test/java"]
+
 
 dependencies {
   implementation project(path: ':core')
+
+  testImplementation 'junit:junit:4.+'
+  testImplementation "org.mockito:mockito-all:1.9.+"
 }
 
 jar {
