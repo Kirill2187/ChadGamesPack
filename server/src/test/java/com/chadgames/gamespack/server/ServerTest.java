@@ -39,9 +39,11 @@ public class ServerTest {
             public void received(Connection connection, Object object) {
                 if (object instanceof Response) {
                     if (((Response) object).responseType == ResponseType.FetchMove) {
+                        System.out.println("client1 receive FetchMove");
                         ++test_message[0];
                         String message = ((ChatMoveData) ((Response) object).data).message;
                         assertEquals(message, "message_from_2");
+                        System.out.println("client1 send LeaveRoom");
                         client1.sendTCP(new Request(RequestType.LeaveRoom));
                     }
                 }
@@ -53,11 +55,14 @@ public class ServerTest {
             public void received(Connection connection, Object object) {
                 if (object instanceof Response) {
                     if (((Response) object).responseType == ResponseType.FetchMove) {
+                        System.out.println("client2 receive FetchMove");
                         ++test_message[0];
                         String message = ((ChatMoveData) ((Response) object).data).message;
                         assertEquals(message, "message_from_1");
+                        System.out.println("client2 send SendMove");
                         client2.sendTCP(new Request(RequestType.SendMove, new ChatMoveData(1, "message_from_2")));
                     } else if (((Response) object).responseType == ResponseType.UserLeft) {
+                        System.out.println("client2 receive UserLeft");
                         test_user_left[0] = true;
                     }
                 }
@@ -68,9 +73,13 @@ public class ServerTest {
         client1.addListener(new Listener() {
             @Override
             public void connected(Connection connection) {
+                System.out.println("client1 send RegisterUser");
                 client1.sendTCP(new Request(RequestType.RegisterUser, "abac1"));
+                System.out.println("client1 send JoinRoom");
                 client1.sendTCP(new Request(RequestType.JoinRoom, GameType.Chat));
+                System.out.println("client1 send StartGame");
                 client1.sendTCP(new Request(RequestType.StartGame));
+                System.out.println("client2 connect");
                 try {
                     client2.connect(5000, Network.IP, Network.PORT);
                 } catch (IOException e) {
@@ -81,13 +90,18 @@ public class ServerTest {
         client2.addListener(new Listener() {
             @Override
             public void connected(Connection connection) {
+                System.out.println("client2 send RegisterUser");
                 client2.sendTCP(new Request(RequestType.RegisterUser, "abac2"));
+                System.out.println("client2 send JoinRoom");
                 client2.sendTCP(new Request(RequestType.JoinRoom, 0));
+                System.out.println("client1 send SendMove");
                 client1.sendTCP(new Request(RequestType.SendMove, new ChatMoveData(0, "message_from_1")));
             }
         });
+        System.out.println("client1 connect");
         client1.connect(5000, Network.IP, Network.PORT);
-        Thread.sleep(1000);
+        Thread.sleep(2000);
+        System.out.println("start assertions");
         assertEquals(test_message[0], 2);
         assertTrue(test_user_left[0]);
     }
