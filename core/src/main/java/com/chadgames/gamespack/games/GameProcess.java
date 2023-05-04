@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.chadgames.gamespack.GameManager;
@@ -25,6 +26,7 @@ import com.chadgames.gamespack.utils.Player;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import static com.chadgames.gamespack.ui.UIScale.*;
 
 public class GameProcess {
 
@@ -78,7 +80,7 @@ public class GameProcess {
     private void createUI(Stage stage) {
         Table root = new Table();
         root.setFillParent(true);
-        root.debugAll();
+        if (GameManager.DEBUG) root.debugAll();
         stage.addActor(root);
 
         Table gameBar = new Table();
@@ -92,10 +94,10 @@ public class GameProcess {
                 activateWindow(pauseWindow);
             }
         });
-        gameBar.add(pauseButton).width(50).padTop(5).padRight(10);
+        gameBar.add(pauseButton).width(percentWidth(.2f)).padTop(PADDING).padRight(PADDING);
 
         Table rootTop = new Table();
-        rootTop.debugAll();
+        if (GameManager.DEBUG) rootTop.debugAll();
         rootTop.setFillParent(true);
         rootTop.top();
         stage.addActor(rootTop);
@@ -137,9 +139,9 @@ public class GameProcess {
                 playerListTable.clearChildren(false);
             }
         });
-        cpy.add(playerListButton).width(50).padTop(5).padLeft(10).left();
+        cpy.add(playerListButton).width(percentWidth(.25f)).padTop(PADDING).padLeft(PADDING).left();
         cpy.row();
-        cpy.add(playerListTable).right().padTop(5).padLeft(10);
+        cpy.add(playerListTable).right().padTop(PADDING).padLeft(PADDING);
 
         gameTable = new Table();
         root.add(gameTable).expand().fill().row();

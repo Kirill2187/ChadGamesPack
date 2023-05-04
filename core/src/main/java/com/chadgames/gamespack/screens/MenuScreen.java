@@ -20,7 +20,9 @@ import com.chadgames.gamespack.GameManager;
 import com.chadgames.gamespack.MyAssetManager;
 import com.chadgames.gamespack.games.GameType;
 import com.chadgames.gamespack.ui.GameButton;
+import com.chadgames.gamespack.ui.UIScale;
 import com.chadgames.gamespack.utils.Constants;
+import static com.chadgames.gamespack.ui.UIScale.*;
 
 /** First screen of the application. Displayed after the application is created. */
 public class MenuScreen implements Screen {
@@ -28,7 +30,7 @@ public class MenuScreen implements Screen {
     private Viewport viewport;
     private Skin skin;
     public MenuScreen() {
-        viewport = new ExtendViewport(225, 400); // TODO: remove magic numbers, should be some global constants
+        viewport = new ExtendViewport(BASE_WIDTH, BASE_HEIGHT);
         stage = new Stage(viewport);
         skin = GameManager.getInstance().skin;
 
@@ -37,7 +39,7 @@ public class MenuScreen implements Screen {
 
     private void createUI() {
         Table root = new Table();
-        root.debugAll();
+        if (GameManager.DEBUG) root.debugAll();
         root.setFillParent(true);
         stage.addActor(root);
         root.top();
@@ -51,7 +53,9 @@ public class MenuScreen implements Screen {
 
         Table usernameTable = new Table();
         TextField nickTextField = new TextField(GameManager.getInstance().username, skin);
-        usernameTable.add(nickTextField).padRight(5).growX().minWidth(100);
+        usernameTable.add(nickTextField).padRight(PADDING).growX()
+            .minWidth(percentWidth(.5f))
+            .minHeight(percentHeight(.1f));
 
         TextButton setUsername = new TextButton("Set", skin);
         setUsername.addListener(new ClickListener() {
@@ -61,7 +65,7 @@ public class MenuScreen implements Screen {
             }
         });
         usernameTable.add(setUsername);
-        root.add(usernameTable).expandX().padLeft(10).padRight(10).padBottom(10).row();
+        root.add(usernameTable).expandX().pad(PADDING).row();
     }
 
     void createGameTable(Table gameTable) {
@@ -75,7 +79,7 @@ public class MenuScreen implements Screen {
                     GameManager.getInstance().launchGame(gameType);
                 }
             });
-            gameTable.add(button).pad(5).growX();
+            gameTable.add(button).pad(PADDING).growX();
         }
     }
 
@@ -86,7 +90,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(skin.getColor("green"));
 
         stage.act(delta);
         stage.draw();

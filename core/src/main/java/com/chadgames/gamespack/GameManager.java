@@ -18,6 +18,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GameManager extends Game {
 
+    public static boolean DEBUG = false;
+
     private static GameManager instance;
     public Skin skin;
     public String username;
@@ -33,7 +35,7 @@ public class GameManager extends Game {
         instance = this;
         username = generateDefaultUsername();
 
-        client = new Client();
+        client = new Client(1000000, 1000000);
         client.start();
         Network.registerClasses(client);
     }

@@ -17,11 +17,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.chadgames.gamespack.GameManager;
+import static com.chadgames.gamespack.ui.UIScale.*;
 
 public class GameButton extends Table {
 
     private Image logoImg;
-    public final static float IMG_SIZE = 80;
+    public final static float IMG_SIZE = percentWidth(.25f);
     private final static float ANIMATION_TIME = 0.2f;
     private final static float ANIMATION_SCALE = 1.1f;
     private int onlinePlayers = 0;
@@ -30,11 +31,11 @@ public class GameButton extends Table {
     public GameButton(Sprite logo, String name, ClickListener listener) {
         logoImg = new Image(logo);
         add(logoImg).size(IMG_SIZE).colspan(2).row();
-        debugAll();
+        if (GameManager.DEBUG) debugAll();
         setWidth(IMG_SIZE);
 
         Label nameLabel = new Label(name, GameManager.getInstance().skin);
-        add(nameLabel).padRight(10).fill();
+        add(nameLabel).padRight(PADDING).fill();
         nameLabel.setAlignment(Align.left);
 
         onlinePlayersLabel = new Label("?", GameManager.getInstance().skin);

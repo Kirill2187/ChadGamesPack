@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.chadgames.gamespack.GameManager;
+import static com.chadgames.gamespack.ui.UIScale.*;
 
 public class GameOverWindow extends Window {
     TextButton restartButton;
@@ -25,11 +26,11 @@ public class GameOverWindow extends Window {
         addActor(root);
 
         restartButton = new TextButton("Restart", skin);
-        root.add(restartButton).growX().padRight(10).padLeft(10).padBottom(10).row();
+        root.add(restartButton).growX().pad(PADDING).row();
         restartButton.addListener(restartListener);
 
         menuButton = new TextButton("Leave", skin);
-        root.add(menuButton).growX().padRight(10).padLeft(10).padBottom(10).row();
+        root.add(menuButton).growX().pad(PADDING).row();
         menuButton.addListener(menuListener);
     }
 

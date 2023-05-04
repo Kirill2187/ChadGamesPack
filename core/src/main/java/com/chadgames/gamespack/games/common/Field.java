@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.chadgames.gamespack.GameManager;
 
 public class Field<C extends FieldCell<?>> {
 
@@ -26,7 +27,7 @@ public class Field<C extends FieldCell<?>> {
         this.cells = cells;
 
         Table gameTable = new Table();
-        gameTable.debugAll();
+        if (GameManager.DEBUG) gameTable.debugAll();
         gameTable.defaults().minSize(0).maxSize(1000);
 
         for (int x = 0; x < WIDTH; x++) {

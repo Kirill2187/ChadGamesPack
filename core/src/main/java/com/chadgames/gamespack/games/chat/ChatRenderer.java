@@ -19,6 +19,7 @@ import com.chadgames.gamespack.games.GameProcess;
 import com.chadgames.gamespack.games.GameRenderer;
 import com.chadgames.gamespack.games.GameState;
 import com.chadgames.gamespack.network.Network;
+import static com.chadgames.gamespack.ui.UIScale.*;
 
 public class ChatRenderer extends GameRenderer {
 
@@ -36,13 +37,13 @@ public class ChatRenderer extends GameRenderer {
 
         Table messages = new Table();
         messages.top();
-        rootTable.add(messages).grow().padTop(5).padLeft(5).padRight(5).row();
+        rootTable.add(messages).grow().pad(PADDING).row();
 
         Table bottomTable = new Table();
-        rootTable.add(bottomTable).fillX().padLeft(10).padRight(10);
+        rootTable.add(bottomTable).fillX().padLeft(PADDING).padRight(PADDING).padBottom(PADDING);
 
         TextField testTextField = new TextField("", skin);
-        bottomTable.add(testTextField).padRight(5).growX().minWidth(100);
+        bottomTable.add(testTextField).padRight(PADDING).growX().minWidth(percentWidth(.6f));
 
         TextButton sendButton = new TextButton("Send", skin);
         sendButton.addListener(new ClickListener() {
@@ -57,7 +58,7 @@ public class ChatRenderer extends GameRenderer {
 
         receivedMessages = new Label("", skin, "default");
         receivedMessages.setAlignment(Align.top | Align.left);
-        receivedMessages.setColor(Color.PURPLE);
+        receivedMessages.setColor(GameManager.getInstance().skin.getColor("perfect_white"));
 
         ScrollPane scrollPane = new ScrollPane(receivedMessages, skin);
         scrollPane.setFadeScrollBars(false);

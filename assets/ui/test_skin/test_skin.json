@@ -80,6 +80,8 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 		up: blue_button04
 		down: blue_button05
 		disabled: grey_panel
+		pressedOffsetX: -2
+		pressedOffsetY: -2
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
@@ -94,6 +96,14 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	opensans_small: {
 		font: opensans_small
 		fontColor: light_green
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
+	default: {
+		font: opensans_big
+		fontColorSelected: orange
+		fontColorUnselected: light_blue
+		selection: blue_panel
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {

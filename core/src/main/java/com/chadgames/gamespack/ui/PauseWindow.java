@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.chadgames.gamespack.GameManager;
+import static com.chadgames.gamespack.ui.UIScale.*;
 
 public class PauseWindow extends Window {
     TextButton resumeButton;
@@ -26,11 +27,11 @@ public class PauseWindow extends Window {
         addActor(root);
 
         resumeButton = new TextButton("Resume", skin);
-        root.add(resumeButton).growX().padRight(10).padLeft(10).padBottom(10).row();
+        root.add(resumeButton).growX().pad(PADDING).row();
         resumeButton.addListener(resumeListener);
 
         menuButton = new TextButton("Leave", skin);
-        root.add(menuButton).growX().padRight(10).padLeft(10).padBottom(10).row();
+        root.add(menuButton).growX().pad(PADDING).row();
         menuButton.addListener(menuListener);
     }
 
