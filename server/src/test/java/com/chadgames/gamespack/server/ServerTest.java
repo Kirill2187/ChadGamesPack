@@ -67,6 +67,9 @@ public class ServerTest {
                     } else if (((Response) object).responseType == ResponseType.UserLeft) {
                         System.out.println("client2 receive UserLeft");
                         test_user_left[0] = true;
+                    } else if (((Response) object).responseType == ResponseType.PlayerIdAssigned) {
+                        System.out.println("client2 receive UserJoined");
+                        client1.sendTCP(new Request(RequestType.SendMove, new ChatMoveData(0, "message_from_1")));
                     }
                 }
             }
@@ -97,8 +100,6 @@ public class ServerTest {
                 client2.sendTCP(new Request(RequestType.RegisterUser, "abac2"));
                 System.out.println("client2 send JoinRoom");
                 client2.sendTCP(new Request(RequestType.JoinRoom, 0));
-                System.out.println("client1 send SendMove");
-                client1.sendTCP(new Request(RequestType.SendMove, new ChatMoveData(0, "message_from_1")));
             }
         });
         System.out.println("client1 connect");
