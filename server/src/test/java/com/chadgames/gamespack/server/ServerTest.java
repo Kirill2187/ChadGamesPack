@@ -22,6 +22,8 @@ import java.io.IOException;
 
 public class ServerTest {
 
+    private final String ip = "localhost";
+
     @Test
     public void test1() throws IOException, InterruptedException {
         GameServer server = new GameServer();
@@ -82,7 +84,7 @@ public class ServerTest {
                 client1.sendTCP(new Request(RequestType.StartGame));
                 System.out.println("client2 connect");
                 try {
-                    client2.connect(5000, Network.IP, Network.PORT);
+                    client2.connect(5000, ip, Network.PORT);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -100,7 +102,7 @@ public class ServerTest {
             }
         });
         System.out.println("client1 connect");
-        client1.connect(5000, Network.IP, Network.PORT);
+        client1.connect(5000, ip, Network.PORT);
         Thread.sleep(2000);
         System.out.println("start assertions");
         assertEquals(test_message[0], 2);
@@ -161,7 +163,7 @@ public class ServerTest {
                 client1.sendTCP(new Request(RequestType.StartGame));
                 System.out.println("client2 connect");
                 try {
-                    client2.connect(5000, Network.IP, Network.PORT);
+                    client2.connect(5000, ip, Network.PORT);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -177,7 +179,8 @@ public class ServerTest {
             }
         });
         System.out.println("client1 connect");
-        client1.connect(5000, Network.IP, Network.PORT);
+        client1.connect(5000, ip, Network.PORT);
+
         Thread.sleep(2000);
         System.out.println("start assertions");
         assertEquals(test_passed[0], 3);
