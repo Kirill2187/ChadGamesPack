@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -45,7 +46,7 @@ public class MenuScreen implements Screen {
         root.add(testLabel).expandX().row();
 
         Table gamesTable = new Table();
-        root.add(gamesTable).expandY().row();
+        root.add(gamesTable).grow().row();
         createGameTable(gamesTable);
 
         Table usernameTable = new Table();
@@ -60,11 +61,12 @@ public class MenuScreen implements Screen {
             }
         });
         usernameTable.add(setUsername);
-        root.add(usernameTable).expandX().padLeft(10).padRight(10).row();
+        root.add(usernameTable).expandX().padLeft(10).padRight(10).padBottom(10).row();
     }
 
     void createGameTable(Table gameTable) {
         MyAssetManager manager = GameManager.getInstance().assetManager;
+        gameTable.align(Align.top);
         for (GameType gameType : GameType.values()) {
             GameButton button = new GameButton(manager.getIcon(gameType.name().toLowerCase()),
             gameType.name(), new ClickListener() {
@@ -73,7 +75,7 @@ public class MenuScreen implements Screen {
                     GameManager.getInstance().launchGame(gameType);
                 }
             });
-            gameTable.add(button).pad(5);
+            gameTable.add(button).pad(5).growX();
         }
     }
 
