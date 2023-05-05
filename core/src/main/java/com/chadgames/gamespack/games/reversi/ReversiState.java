@@ -81,7 +81,6 @@ public class ReversiState extends GameState {
 
     private ArrayList<ReversiCoords> recolor(int x, int y, int dx, int dy) {
         ArrayList<ReversiCoords> ret = new ArrayList();
-        Symbol another_color = (field[x][y] == White ? Black : White);
         int k = 1;
         boolean ok = false;
         for (; inField(x + dx * k, y + dy * k); ++k) {
@@ -101,7 +100,7 @@ public class ReversiState extends GameState {
         for (int t = 1; t < k; ++t) {
             int nx = x + dx * t;
             int ny = y + dy * t;
-            field[nx][ny] = another_color;
+            field[nx][ny] = field[x][y];
             ret.add(new ReversiCoords(nx, ny));
         }
         return ret;
