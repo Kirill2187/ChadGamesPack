@@ -2,13 +2,13 @@ package com.chadgames.gamespack.games.reversi;
 
 import com.chadgames.gamespack.games.Actions;
 
+import java.util.ArrayList;
+
 public class ReversiActions implements Actions {
-    public int x;
-    public int y;
+    public ArrayList<ReversiCoords> list;
     public Symbol symbol;
-    public ReversiActions(int x, int y, Symbol symbol) {
-        this.x = x;
-        this.y = y;
+    public ReversiActions(ArrayList list, Symbol symbol) {
+        this.list = list;
         this.symbol = symbol;
     }
 }
