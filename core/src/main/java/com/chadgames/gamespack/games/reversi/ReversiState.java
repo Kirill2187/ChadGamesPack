@@ -89,7 +89,7 @@ public class ReversiState extends GameState {
             if (field[nx][ny] == null) {
                 return new ArrayList<>();
             }
-            if (field[nx][ny] == another_color) {
+            if (field[nx][ny] == field[x][y]) {
                 break;
             }
         }
@@ -112,8 +112,7 @@ public class ReversiState extends GameState {
         if (gameFinished || !gameStarted) return false;
         if (moveData.playerId != currentPlayerId) return false;
         ReversiMoveData data = (ReversiMoveData) moveData;
-        if (data.x < 0 || data.x >= SIZE ||
-                data.y < 0 || data.y >= SIZE) {
+        if (!inField(data.x, data.y)) {
             return false;
         }
         return field[data.x][data.y] == null;
@@ -122,10 +121,6 @@ public class ReversiState extends GameState {
     public void startGame() {
         super.startGame();
         currentPlayerId = symbolToPlayer.get(White);
-        field[SIZE / 2 - 1][SIZE / 2 - 1] = White;
-        field[SIZE / 2][SIZE / 2] = White;
-        field[SIZE / 2 - 1][SIZE / 2] = Black;
-        field[SIZE / 2][SIZE / 2 - 1] = Black;
     }
 
     @Override
