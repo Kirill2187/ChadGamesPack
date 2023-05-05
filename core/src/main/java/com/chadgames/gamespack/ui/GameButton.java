@@ -30,17 +30,17 @@ public class GameButton extends Table {
 
     public GameButton(Sprite logo, String name, ClickListener listener) {
         logoImg = new Image(logo);
-        add(logoImg).size(IMG_SIZE).colspan(2).row();
+        add(logoImg).size(IMG_SIZE).colspan(1).row();
         if (GameManager.DEBUG) debugAll();
         setWidth(IMG_SIZE);
 
         Label nameLabel = new Label(name, GameManager.getInstance().skin);
-        add(nameLabel).padRight(PADDING).fill();
-        nameLabel.setAlignment(Align.left);
+        add(nameLabel).padTop(PADDING).expandX();
+        nameLabel.setAlignment(Align.center);
 
         onlinePlayersLabel = new Label("?", GameManager.getInstance().skin);
         onlinePlayersLabel.setAlignment(Align.right);
-        add(onlinePlayersLabel).fill();
+//        add(onlinePlayersLabel).padTop(PADDING).fill();
 
         addListener(listener);
 

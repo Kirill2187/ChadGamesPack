@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.chadgames.gamespack.GameManager;
 import static com.chadgames.gamespack.ui.UIScale.*;
 
@@ -20,6 +21,8 @@ public class PauseWindow extends Window {
 
     public void createUI(ClickListener resumeListener, ClickListener menuListener) {
         Skin skin = GameManager.getInstance().skin;
+
+        getTitleLabel().setAlignment(Align.center);
 
         Table root = new Table();
         root.setFillParent(true);

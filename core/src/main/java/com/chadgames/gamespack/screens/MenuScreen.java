@@ -45,7 +45,7 @@ public class MenuScreen implements Screen {
         root.top();
 
         Label testLabel = new Label("Test", skin, "title");
-        root.add(testLabel).expandX().row();
+        root.add(testLabel).expandX().padTop(PADDING).row();
 
         Table gamesTable = new Table();
         root.add(gamesTable).grow().row();
@@ -55,7 +55,7 @@ public class MenuScreen implements Screen {
         TextField nickTextField = new TextField(GameManager.getInstance().username, skin);
         usernameTable.add(nickTextField).padRight(PADDING).growX()
             .minWidth(percentWidth(.5f))
-            .minHeight(percentHeight(.1f));
+            .minHeight(percentHeight(.08f));
 
         TextButton setUsername = new TextButton("Set", skin);
         setUsername.addListener(new ClickListener() {
