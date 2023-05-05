@@ -83,6 +83,7 @@ public class ReversiState extends GameState {
         ArrayList<ReversiCoords> ret = new ArrayList();
         Symbol another_color = (field[x][y] == White ? Black : White);
         int k = 1;
+        boolean ok = false;
         for (; inField(x + dx * k, y + dy * k); ++k) {
             int nx = x + dx * k;
             int ny = y + dy * k;
@@ -90,8 +91,12 @@ public class ReversiState extends GameState {
                 return new ArrayList<>();
             }
             if (field[nx][ny] == field[x][y]) {
+                ok = true;
                 break;
             }
+        }
+        if (!ok) {
+            return ret;
         }
         for (int t = 1; t < k; ++t) {
             int nx = x + dx * t;
