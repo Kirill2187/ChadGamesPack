@@ -34,7 +34,9 @@ public class ReversiRenderer extends GameRenderer {
     public void makeActions(Actions actions) {
         if (actions == null) return;
         ReversiActions action = (ReversiActions) actions;
-        field.getCell(action.x, action.y).setSymbol(action.symbol);
+        for (ReversiCoords coords: action.list) {
+            field.getCell(coords.x, coords.y).setSymbol(action.symbol);
+        }
     }
 
     @Override

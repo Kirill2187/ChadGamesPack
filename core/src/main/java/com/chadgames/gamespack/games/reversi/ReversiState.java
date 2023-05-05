@@ -6,10 +6,9 @@ import static com.chadgames.gamespack.games.reversi.Symbol.*;
 import com.chadgames.gamespack.games.Actions;
 import com.chadgames.gamespack.games.GameState;
 import com.chadgames.gamespack.games.MoveData;
-import com.chadgames.gamespack.games.tictactoe.TicTacToeConstants;
-import com.chadgames.gamespack.games.tictactoe.TicTacToeMoveData;
 import com.chadgames.gamespack.utils.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ReversiState extends GameState {
@@ -57,23 +56,33 @@ public class ReversiState extends GameState {
     public Actions makeMove(MoveData moveData) {
         ReversiMoveData data = (ReversiMoveData) moveData;
         field[data.x][data.y] = playerToSymbol.get(moveData.playerId);
-        recolor(data.x, data.y);
+        ArrayList<ReversiCoords> list = recolor(data.x, data.y);
         currentPlayerId = currentPlayerId == symbolToPlayer.get(White) ? symbolToPlayer.get(Black) : symbolToPlayer.get(White);
-        return new ReversiActions(data.x, data.y, field[data.x][data.y]);
+        return new ReversiActions(list, field[data.x][data.y]);
     }
 
-    private void recolor(int x, int y) {
-        recolor(x, y, 0, 1);
+    private ArrayList<ReversiCoords> recolor(int x, int y) {
+        ArrayList<ReversiCoords> ret = new ArrayList<>();
+        ret.addAll(recolor(x, y, 0, 1));
+        ret.addAll(recolor(x, y, 0, -1));
+        ret.addAll(recolor(x, y, -1, 0));
+        ret.addAll(recolor(x, y, 1, 0));
+        ret.addAll(recolor(x, y, 1, 1));
+        ret.addAll(recolor(x, y, 1, -1));
+        ret.addAll(recolor(x, y, -1, -1));
+        ret.addAll(recolor(x, y, -1, 1));
+        return ret;
     }
 
-    private void recolor(int x, int y, int dx, int dy) {
+    private ArrayList<ReversiCoords> recolor(int x, int y, int dx, int dy) {
+        ArrayList<ReversiCoords> ret = new ArrayList();
         Symbol another_color = (field[x][y] == White ? Black : White);
         int k = 1;
         for (; inField(x + dx * k, y + dy * k); ++k) {
             int nx = x + dx * k;
             int ny = y + dy * k;
             if (field[nx][ny] == null) {
-                return;
+                return ret;
             }
             if (field[nx][ny] == field[nx][ny]) {
                 break;
@@ -83,7 +92,9 @@ public class ReversiState extends GameState {
             int nx = x + dx * t;
             int ny = y + dy * t;
             field[nx][ny] = another_color;
+            ret.add(new ReversiCoords(nx, ny));
         }
+        return ret;
     }
 
     private boolean inField(int x, int y) {
