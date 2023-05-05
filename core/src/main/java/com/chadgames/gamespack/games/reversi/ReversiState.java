@@ -31,6 +31,10 @@ public class ReversiState extends GameState {
                 field[i][j] = null;
             }
         }
+        field[SIZE / 2 - 1][SIZE / 2 - 1] = White;
+        field[SIZE / 2][SIZE / 2] = White;
+        field[SIZE / 2 - 1][SIZE / 2] = Black;
+        field[SIZE / 2][SIZE / 2 - 1] = Black;
     }
 
     @Override
@@ -63,6 +67,7 @@ public class ReversiState extends GameState {
 
     private ArrayList<ReversiCoords> recolor(int x, int y) {
         ArrayList<ReversiCoords> ret = new ArrayList<>();
+        ret.add(new ReversiCoords(x, y));
         ret.addAll(recolor(x, y, 0, 1));
         ret.addAll(recolor(x, y, 0, -1));
         ret.addAll(recolor(x, y, -1, 0));
@@ -82,9 +87,9 @@ public class ReversiState extends GameState {
             int nx = x + dx * k;
             int ny = y + dy * k;
             if (field[nx][ny] == null) {
-                return ret;
+                return new ArrayList<>();
             }
-            if (field[nx][ny] == field[nx][ny]) {
+            if (field[nx][ny] == another_color) {
                 break;
             }
         }
@@ -117,6 +122,10 @@ public class ReversiState extends GameState {
     public void startGame() {
         super.startGame();
         currentPlayerId = symbolToPlayer.get(White);
+        field[SIZE / 2 - 1][SIZE / 2 - 1] = White;
+        field[SIZE / 2][SIZE / 2] = White;
+        field[SIZE / 2 - 1][SIZE / 2] = Black;
+        field[SIZE / 2][SIZE / 2 - 1] = Black;
     }
 
     @Override
