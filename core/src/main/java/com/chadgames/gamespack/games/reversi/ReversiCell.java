@@ -15,9 +15,9 @@ public class ReversiCell extends FieldCell<Symbol> {
     @Override
     public Sprite getSprite(Symbol symbol) {
         if (symbol == White) {
-            return GameManager.getInstance().assetManager.getSprite(GameType.Reversi, "White");
+            return GameManager.getInstance().assetManager.getSprite(GameType.Reversi, "reversi_white");
         } else if (symbol == Black) {
-            return GameManager.getInstance().assetManager.getSprite(GameType.Reversi, "Black");
+            return GameManager.getInstance().assetManager.getSprite(GameType.Reversi, "reversi_black");
         }
         return null;
     }
