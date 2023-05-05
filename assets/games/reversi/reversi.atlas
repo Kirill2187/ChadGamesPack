@@ -1,0 +1,20 @@
+
+reversi.png
+size: 512, 256
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+reversi_black
+  rotate: false
+  xy: 132, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+reversi_white
+  rotate: false
+  xy: 2, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
