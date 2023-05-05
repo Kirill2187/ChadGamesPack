@@ -6,11 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -66,6 +68,27 @@ public class MenuScreen implements Screen {
         });
         usernameTable.add(setUsername);
         root.add(usernameTable).expandX().pad(PADDING).row();
+
+        createWaitingWindow();
+    }
+
+    private void createWaitingWindow() {
+        Table windowTable = new Table();
+        windowTable.setFillParent(true);
+        stage.addActor(windowTable);
+        windowTable.center();
+
+        Window window = new Window("", skin);
+        window.setBackground(GameManager.getInstance().skin.newDrawable("white", 0.5f, 0.5f, 0.5f, 1));
+        windowTable.add(window).size(percentWidth(.5f), percentWidth(.3f));
+
+        window.add(new Label("Connecting...", skin)).row();
+        windowTable.setBackground(GameManager.getInstance().skin.newDrawable("white", 0, 0, 0, 0.5f));
+
+        GameManager.getInstance().onConnected.subscribe(() -> {
+            windowTable.addAction(Actions.sequence(Actions.fadeOut(1f), Actions.removeActor()));
+            GameManager.getInstance().onConnected.unsubscribe("waitWindow");
+        }, "waitWindow");
     }
 
     void createGameTable(Table gameTable) {

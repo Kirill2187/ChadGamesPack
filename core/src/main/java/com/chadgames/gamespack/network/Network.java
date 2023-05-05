@@ -18,8 +18,8 @@ public final class Network {
 
     private Network() {}
     public static int PORT = 54555;
-//    public static String IP = "158.160.32.100"; // TODO: should it be hardcoded?
-    public static String IP = "localhost";
+    public static String IP = "158.160.32.100"; // TODO: should it be hardcoded?
+//    public static String IP = "localhost";
 
     public static void registerClasses(EndPoint endPoint) {
         Kryo kryo = endPoint.getKryo();

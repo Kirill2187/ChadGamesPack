@@ -7,8 +7,10 @@ import com.chadgames.gamespack.games.GameType;
 import com.chadgames.gamespack.network.Network;
 import com.chadgames.gamespack.network.Request;
 import com.chadgames.gamespack.network.RequestType;
+import com.chadgames.gamespack.network.Response;
 import com.chadgames.gamespack.screens.GameScreen;
 import com.chadgames.gamespack.screens.MenuScreen;
+import com.chadgames.gamespack.utils.EventSource;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -28,6 +30,9 @@ public class GameManager extends Game {
 
     public MyAssetManager assetManager;
 
+    public EventSource onConnected = new EventSource();
+    public EventSource onDisconnected = new EventSource();
+
     public static GameManager getInstance() {
         return instance;
     }
@@ -38,6 +43,20 @@ public class GameManager extends Game {
         client = new Client(1000000, 1000000);
         client.start();
         Network.registerClasses(client);
+
+        client.addListener(new Listener() {
+            @Override
+            public void connected(Connection connection) {
+                Gdx.app.log("network", "Connected to server");
+                sendRequest(RequestType.RegisterUser, username);
+                onConnected.triggerEvent();
+            }
+            @Override
+            public void disconnected(Connection connection) {
+                Gdx.app.log("network", "Disconnected from server");
+                onDisconnected.triggerEvent();
+            }
+        });
     }
 
     @Override
@@ -69,22 +88,11 @@ public class GameManager extends Game {
     public void connect() {
         try {
             Gdx.app.log("network", "Trying to connect to " + Network.IP);
-            client.addListener(new Listener() {
-                @Override
-                public void connected(Connection connection) {
-                    Gdx.app.log("network", "Connected to server");
-                    sendRequest(RequestType.RegisterUser, username);
-                }
-                @Override
-                public void disconnected(Connection connection) {
-                    Gdx.app.log("network", "Disconnected from server");
-                }
-            });
             client.connect(5000, Network.IP, Network.PORT);
-
         } catch (IOException e) {
-            Gdx.app.log("network", "Failed to connect to server");
+            Gdx.app.log("network", "Failed to connect to server. Trying again");
         }
+        if (!client.isConnected()) connect();
     }
 
     public boolean isConnected() {
