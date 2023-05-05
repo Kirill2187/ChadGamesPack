@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.chadgames.gamespack.GameManager;
 import static com.chadgames.gamespack.ui.UIScale.*;
 
@@ -23,12 +24,14 @@ public class WaitWindow extends Window {
     public void createUI(ClickListener startListener, ClickListener leaveListener) {
         Skin skin = GameManager.getInstance().skin;
 
+        getTitleLabel().setAlignment(Align.center);
+
         Table root = new Table();
         root.setFillParent(true);
         root.bottom();
         addActor(root);
 
-        playerCount = new Label("Wait...", skin, "title");
+        playerCount = new Label("Wait...", skin, "big");
         root.add(playerCount).expand().pad(PADDING).padTop(PADDING * 5).row();
 
         startButton = new TextButton("Start", skin);
