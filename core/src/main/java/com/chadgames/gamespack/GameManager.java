@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GameManager extends Game {
 
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
 
     private static GameManager instance;
     public Skin skin;
