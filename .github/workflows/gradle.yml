@@ -43,5 +43,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: server
-        path: server/build/lib/*
+        path: server/build/libs/*
     
