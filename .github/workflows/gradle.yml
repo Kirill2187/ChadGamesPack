@@ -1,21 +1,9 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
 name: Java CI with Gradle
 
-on:
-  push:
-    branches: [ "main", "dev" ]
-  pull_request:
-    branches: [ "main", "dev" ]
+on: [push]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,5 +13,27 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: 'gradle'
-    - run: ./gradlew core:test --no-daemon
-    - run: ./gradlew server:test --no-daemon
+      
+    - name: Run core tests
+      run: ./gradlew core:test --no-daemon
+    - name: Run server tests
+      run: ./gradlew server:test --no-daemon
+  deliver:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Build client jar
+      run: ./gradlew lwjgl3:jar
+    - name: Upload client jar
+      uses: actions/upload-artifact@v3
+      with:
+        name: client
+        path: lwjgl3/build/lib/*
+    - name: Build server jar
+      run: ./gradlew server:jar
+    - name: Upload server jar
+      uses: actions/upload-artifact@v3
+      with:
+        name: server
+        path: server/build/lib/*
+    
