@@ -3,4 +3,5 @@ eclipse.project.name = appName + '-core'
 
 dependencies {
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
+  api "com.esotericsoftware:kryonet:2.22.0-RC1"
 }
