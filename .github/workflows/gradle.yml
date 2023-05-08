@@ -64,5 +64,5 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: echo test > test
-    
+        script: mv server/build/libs/* server.jar; rm -r server/; killall java; java -jar server.jar &> logs &; 
+
