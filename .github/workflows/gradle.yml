@@ -48,6 +48,16 @@ jobs:
       with:
         name: server
         path: server/build/libs/*
+        
+    - name: Copy server jar via scp
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: server/build/libs/*
+        target: /home/chadgames
+        
     - name: Update server 
       uses: appleboy/ssh-action@master
       with:
