@@ -1,6 +1,10 @@
 name: Java CI with Gradle
 
-on: [push]
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
 
 jobs:
   test:
@@ -44,4 +48,11 @@ jobs:
       with:
         name: server
         path: server/build/libs/*
+    - name: Update server 
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: echo test > test
     
