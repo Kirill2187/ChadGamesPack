@@ -18,6 +18,7 @@ import com.chadgames.gamespack.games.Actions;
 import com.chadgames.gamespack.games.GameProcess;
 import com.chadgames.gamespack.games.GameRenderer;
 import com.chadgames.gamespack.games.GameState;
+import com.chadgames.gamespack.network.Network;
 
 public class ChatRenderer extends GameRenderer {
 
@@ -47,9 +48,8 @@ public class ChatRenderer extends GameRenderer {
         sendButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ChatMoveData textSent = new ChatMoveData();
-                textSent.message = testTextField.getText();
-                textSent.playerId = gameProcess.getMyPlayerId();
+                ChatMoveData textSent = new ChatMoveData(gameProcess.getMyPlayerId(),
+                                                        testTextField.getText());
                 gameProcess.makeMoveAndSendToServer(textSent);
             }
         });
