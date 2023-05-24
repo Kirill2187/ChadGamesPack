@@ -1,13 +1,28 @@
 {
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-	button: {
-		file: font-button-export.fnt
+	opensans24: {
+		file: opensans24.fnt
+		scaledSize: -1
+		markupEnabled: false
+		flip: false
 	}
-	font: {
-		file: font-export.fnt
+	opensans48: {
+		file: opensans48.fnt
+		scaledSize: -1
+		markupEnabled: false
+		flip: false
+	}
+	opensans64: {
+		file: opensans64.fnt
+		scaledSize: -1
+		markupEnabled: false
+		flip: false
 	}
 	title: {
-		file: font-title-export.fnt
+		file: title.fnt
+		scaledSize: -1
+		markupEnabled: false
+		flip: false
 	}
 }
 com.badlogic.gdx.graphics.Color: {
@@ -47,15 +62,75 @@ com.badlogic.gdx.graphics.Color: {
 		b: 0.85882354
 		a: 1
 	}
-	white: {
+	window: {
+		r: 0.76862746
+		g: 0.4509804
+		b: 0
+		a: 1
+	}
+	dark_green: {
+		r: 0.019607844
+		g: 0.4392157
+		b: 0.019607844
+		a: 1
+	}
+	green: {
+		r: 0.3
+		g: 0.6
+		b: 0.3
+		a: 1
+	}
+	grey: {
+		r: 0.654902
+		g: 0.6509804
+		b: 0.64705884
+		a: 1
+	}
+	blue: {
+		r: 0.11764706
+		g: 0.654902
+		b: 0.88235295
+		a: 1
+	}
+	blue_highlight: {
+		r: 0.2
+		g: 0.8
+		b: 0.9
+		a: 1
+	}
+	blue_pressed: {
+		r: 0.01
+		g: 0.4
+		b: 0.7
+		a: 1
+	}
+	light_green: {
+		r: 0.4509804
+		g: 0.8039216
+		b: 0.29411766
+		a: 1
+	}
+	orange: {
+		r: 0.9098039
+		g: 0.41568628
+		b: 0.09019608
+		a: 1
+	}
+	perfect_white: {
 		r: 1
 		g: 1
 		b: 1
 		a: 1
 	}
-	window: {
-		r: 0.76862746
-		g: 0.4509804
+	white: {
+		r: 0.93333334
+		g: 0.93333334
+		b: 0.93333334
+		a: 1
+	}
+	yellow: {
+		r: 1
+		g: 0.8
 		b: 0
 		a: 1
 	}
@@ -63,20 +138,24 @@ com.badlogic.gdx.graphics.Color: {
 com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	button-c: {
 		name: button
-		color: color
+		color: blue
 	}
 	button-close-c: {
 		name: button-close
-		color: color
+		color: blue
 	}
 	button-pressed-c: {
 		name: button-pressed
-		color: color
+		color: blue_pressed
 	}
 	button-h: {
 		name: button
-		color: highlight
+		color: blue_highlight
 	}
+    button-d: {
+        name: button
+        color: gray
+    }
 	checkbox-c: {
 		name: checkbox
 		color: color
@@ -95,11 +174,11 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	}
 	scrollbar-c: {
 		name: scrollbar
-		color: color
+		color: blue
 	}
 	scrollbar-android-c: {
 		name: scrollbar-android
-		color: color
+		color: blue
 	}
 	select-box-c: {
 		name: select-box
@@ -111,15 +190,15 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	}
 	slider-horizontal-c: {
 		name: slider-horizontal
-		color: color
+		color: blue
 	}
 	slider-knob-c: {
 		name: slider-knob
-		color: color
+		color: blue
 	}
 	slider-vertical-c: {
 		name: slider-vertical
-		color: color
+		color: blue
 	}
 	splitpane-horizontal-c: {
 		name: splitpane-horizontal
@@ -131,11 +210,11 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	}
 	textfield-c: {
 		name: textfield
-		color: color
+		color: blue
 	}
 	tooltip-c: {
 		name: tooltip
-		color: color
+		color: blue
 	}
 	touchpad-c: {
 		name: touchpad
@@ -159,7 +238,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	}
 	window-c: {
 		name: window
-		color: color
+		color: orange
 	}
 	selection: {
 		name: white
@@ -211,11 +290,11 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	}
 	window-w: {
 		name: window
-		color: window
+		color: dark_green
 	}
 	button-p: {
 		name: button
-		color: pressed
+		color: blue_pressed
 	}
 	slider-fancy-p: {
 		name: slider-fancy
@@ -262,7 +341,7 @@ com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 	default: {
 		checkboxOn: checkbox-pressed-c
 		checkboxOff: checkbox-c
-		font: button
+		font: opensans24
 		fontColor: color
 		downFontColor: pressed
 		overFontColor: highlight
@@ -270,7 +349,7 @@ com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 	radio: {
 		checkboxOn: radio-pressed-c
 		checkboxOff: checkbox-c
-		font: button
+		font: opensans24
 		fontColor: color
 	}
 }
@@ -283,7 +362,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 	default: {
-		font: button
+		font: opensans24
 		fontColor: white
 		downFontColor: white
 		overFontColor: gray
@@ -297,7 +376,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 		imageOver: checkbox-h
 		imageChecked: checkbox-pressed-c
 		imageCheckedOver: checkbox-pressed-h
-		font: button
+		font: opensans24
 		fontColor: color
 		downFontColor: pressed
 		overFontColor: highlight
@@ -308,7 +387,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 		imageOver: checkbox-h
 		imageChecked: radio-pressed-c
 		imageCheckedOver: radio-pressed-h
-		font: button
+		font: opensans24
 		fontColor: color
 		downFontColor: pressed
 		overFontColor: highlight
@@ -316,21 +395,25 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	default: {
-		font: font
-		fontColor: color
+		font: opensans24
+		fontColor: white
 	}
 	button: {
-		font: button
+		font: opensans24
 		fontColor: color
 	}
 	title: {
 		font: title
-		fontColor: color
+		fontColor: white
 	}
+    big: {
+        font: opensans64
+        fontColor: white
+    }
 }
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 	default: {
-		font: font
+		font: opensans24
 		fontColorSelected: white
 		fontColorUnselected: white
 		selection: selection
@@ -363,7 +446,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 	default: {
-		font: font
+		font: opensans24
 		fontColor: white
 		background: select-box-c
 		scrollStyle: default
@@ -405,18 +488,20 @@ com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	default: {
-		font: button
+		font: opensans24
 		fontColor: white
 		downFontColor: white
 		overFontColor: gray
+        disabledFontColor: perfect_white
 		up: button-c
 		down: button-p
 		over: button-h
+        disabled: button-d
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	default: {
-		font: font
+		font: opensans24
 		fontColor: white
 		background: textfield-c
 		cursor: white
@@ -443,8 +528,8 @@ com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 	default: {
-		background: window-w
-		titleFont: font
+		background: window-c
+		titleFont: opensans24
 		titleFontColor: white
 	}
 }

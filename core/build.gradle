@@ -1,7 +1,16 @@
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 eclipse.project.name = appName + '-core'
+sourceSets.test.java.srcDirs = ["src/test/java"]
+
+test {
+  dependsOn cleanTest
+  testLogging.showStandardStreams = true
+}
 
 dependencies {
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
   api "com.esotericsoftware:kryonet:2.22.0-RC1"
+
+  testImplementation 'junit:junit:4.+'
+  testImplementation "org.mockito:mockito-all:1.9.+"
 }

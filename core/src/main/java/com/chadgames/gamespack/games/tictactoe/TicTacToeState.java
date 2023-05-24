@@ -27,7 +27,7 @@ public class TicTacToeState extends GameState {
     public TicTacToeState() {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                field[i][j] = Symbol.EMPTY;
+                field[i][j] = null;
             }
         }
     }
@@ -69,10 +69,7 @@ public class TicTacToeState extends GameState {
             data.y < 0 || data.y >= SIZE) {
             return false;
         }
-        if (field[data.x][data.y] != Symbol.EMPTY) {
-            return false;
-        }
-        return true;
+        return field[data.x][data.y] == null;
     }
 
     private int checkOneLine(int i, int j, int dx, int dy) {

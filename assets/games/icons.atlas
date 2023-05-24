@@ -11,6 +11,13 @@ chat
   orig: 512, 512
   offset: 0, 0
   index: -1
+reversi
+  rotate: false
+  xy: 1030, 2
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
 tictactoe
   rotate: false
   xy: 516, 2

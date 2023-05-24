@@ -17,29 +17,48 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.chadgames.gamespack.GameManager;
+import static com.chadgames.gamespack.ui.UIScale.*;
 
 public class GameButton extends Table {
 
     private Image logoImg;
-    public final static int IMG_SIZE = 100;
+    public final static float IMG_SIZE = percentWidth(.25f);
+    private final static float ANIMATION_TIME = 0.2f;
+    private final static float ANIMATION_SCALE = 1.1f;
     private int onlinePlayers = 0;
     private Label onlinePlayersLabel;
 
     public GameButton(Sprite logo, String name, ClickListener listener) {
         logoImg = new Image(logo);
-        add(logoImg).size(IMG_SIZE).colspan(2).row();
-        debugAll();
+        add(logoImg).size(IMG_SIZE).colspan(1).row();
+        if (GameManager.DEBUG) debugAll();
         setWidth(IMG_SIZE);
 
         Label nameLabel = new Label(name, GameManager.getInstance().skin);
-        add(nameLabel).padRight(10).fill();
-        nameLabel.setAlignment(Align.left);
+        add(nameLabel).padTop(PADDING).expandX();
+        nameLabel.setAlignment(Align.center);
 
         onlinePlayersLabel = new Label("?", GameManager.getInstance().skin);
         onlinePlayersLabel.setAlignment(Align.right);
-        add(onlinePlayersLabel).padRight(10).fill();
+//        add(onlinePlayersLabel).padTop(PADDING).fill();
 
         addListener(listener);
+
+        logoImg.addListener(new InputListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                super.enter(event, x, y, pointer, fromActor);
+                if (logoImg.hasActions()) return;
+                logoImg.addAction(Actions.scaleTo(ANIMATION_SCALE, ANIMATION_SCALE, ANIMATION_TIME));
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                logoImg.addAction(Actions.scaleTo(1, 1, ANIMATION_TIME));
+                super.exit(event, x, y, pointer, toActor);
+            }
+        });
+        logoImg.setOrigin(IMG_SIZE / 2, IMG_SIZE / 2);
     }
 
     public void setOnlinePlayers(int onlinePlayers) {

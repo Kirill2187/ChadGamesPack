@@ -182,4 +182,7 @@ public class GameServer {
         return users.get(userId);
     }
 
+    public void shutDown() {
+        server.stop();
+    }
 }

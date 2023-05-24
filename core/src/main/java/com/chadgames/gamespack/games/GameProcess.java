@@ -11,8 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
 import com.chadgames.gamespack.GameManager;
 import com.chadgames.gamespack.network.PlayerAndRoomId;
 import com.chadgames.gamespack.network.RequestType;
@@ -25,6 +28,7 @@ import com.chadgames.gamespack.utils.Player;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import static com.chadgames.gamespack.ui.UIScale.*;
 
 public class GameProcess {
 
@@ -33,6 +37,7 @@ public class GameProcess {
     private WaitWindow waitWindow;
     private PauseWindow pauseWindow;
     private GameOverWindow gameOverWindow;
+    private Drawable windowBackground;
     private GameState gameState;
     private GameType gameType;
     private Listener clientListener;
@@ -44,6 +49,11 @@ public class GameProcess {
         return gameTable;
     }
 
+    private Stage stage;
+    public Stage getStage() {
+        return stage;
+    }
+
     private SpriteBatch batch;
     public SpriteBatch getBatch() {
         return batch;
@@ -52,6 +62,8 @@ public class GameProcess {
     public GameProcess(GameType gameType, Stage stage, SpriteBatch batch) {
         this.gameType = gameType;
         this.batch = batch;
+        this.stage = stage;
+        windowBackground = GameManager.getInstance().skin.newDrawable("white", new Color(0, 0, 0, 0.5f));
         GameFactory gameFactory = Constants.GAME_FACTORIES.get(gameType);
 
         createUI(stage);
@@ -65,8 +77,12 @@ public class GameProcess {
     public void activateWindow(Window window) {
         window.setVisible(true);
         windowTable.clearChildren();
+        windowTable.add(window).size(WINDOW_WIDTH, WINDOW_HEIGHT);
         windowTable.setVisible(true);
-        windowTable.add(window).minSize(200);
+
+        windowTable.setBackground(windowBackground);
+        windowTable.getColor().a = 0;
+        windowTable.addAction(com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn(0.4f));
     }
 
     public void deactivateWindow(Window window) {
@@ -78,7 +94,7 @@ public class GameProcess {
     private void createUI(Stage stage) {
         Table root = new Table();
         root.setFillParent(true);
-        root.debugAll();
+        if (GameManager.DEBUG) root.debugAll();
         stage.addActor(root);
 
         Table gameBar = new Table();
@@ -92,18 +108,17 @@ public class GameProcess {
                 activateWindow(pauseWindow);
             }
         });
-        gameBar.add(pauseButton).width(50).padTop(5).padRight(10);
+        gameBar.add(pauseButton).padTop(PADDING).padRight(PADDING);
 
         Table rootTop = new Table();
-        rootTop.debugAll();
+        if (GameManager.DEBUG) rootTop.debugAll();
         rootTop.setFillParent(true);
         rootTop.top();
         stage.addActor(rootTop);
 
         Table cpy = new Table();
-        rootTop.add(cpy).expandX().top().left();
+        rootTop.add(cpy).expandX().top().left().padLeft(PADDING);
         TextButton playerListButton = new TextButton("Players", GameManager.getInstance().skin); // TODO: replace with ImageButton
-        playerListButton.getLabel().setFontScale(0.5f, 0.5f);
 
         Table playerListTable = new Table();
         Color[] colors = {Color.CORAL, Color.ORANGE, Color.BROWN, Color.CHARTREUSE};
@@ -124,7 +139,7 @@ public class GameProcess {
                     labelColor.fill();
                     new_label.getStyle().background = new Image(new Texture(labelColor)).getDrawable();
 
-                    playerListTable.add(new_label).bottom().row();
+                    playerListTable.add(new_label).left().growX().row();
                 }
                 labelColor.dispose();
 
@@ -137,9 +152,9 @@ public class GameProcess {
                 playerListTable.clearChildren(false);
             }
         });
-        cpy.add(playerListButton).width(50).padTop(5).padLeft(10).left();
+        cpy.add(playerListButton).width(percentWidth(.25f)).padTop(PADDING).center();
         cpy.row();
-        cpy.add(playerListTable).right().padTop(5).padLeft(10);
+        cpy.add(playerListTable).center().padTop(PADDING);
 
         gameTable = new Table();
         root.add(gameTable).expand().fill().row();

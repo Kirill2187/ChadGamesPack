@@ -10,39 +10,17 @@ import com.chadgames.gamespack.games.Actions;
 import com.chadgames.gamespack.games.GameProcess;
 import com.chadgames.gamespack.games.GameRenderer;
 import com.chadgames.gamespack.games.GameState;
+import com.chadgames.gamespack.games.common.Field;
 
 public class TicTacToeRenderer extends GameRenderer {
 
-    private TicTacToeCell[][] cells =
-        new TicTacToeCell[TicTacToeConstants.SIZE][TicTacToeConstants.SIZE];
+    private final Field<TicTacToeCell> field;
 
     public TicTacToeRenderer(GameProcess gameProcess, Table rootTable) {
         super(gameProcess);
 
-        Table gameTable = new Table();
-        gameTable.debugAll();
-        gameTable.defaults().minSize(0).maxSize(1000);
-
-        for (int i = 0; i < TicTacToeConstants.SIZE; i++) {
-            for (int j = 0; j < TicTacToeConstants.SIZE; j++) {
-                cells[i][j] = new TicTacToeCell(i, j);
-                gameTable.add(cells[i][j]).grow();
-
-                cells[i][j].addListener(new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        TicTacToeCell cell = (TicTacToeCell) event.getListenerActor();
-                        cellClicked(cell);
-                    }
-                });
-            }
-            gameTable.row();
-        }
-
-        rootTable.add(gameTable)
-            .grow()
-            .maxHeight(Value.percentWidth(1f, rootTable))
-            .maxWidth(Value.percentHeight(1f, rootTable));
+        field = new Field<>(TicTacToeCell.class, rootTable, this::cellClicked,
+            TicTacToeConstants.SIZE, TicTacToeConstants.SIZE);
     }
 
     void cellClicked(TicTacToeCell cell) {
@@ -60,15 +38,15 @@ public class TicTacToeRenderer extends GameRenderer {
     public void makeActions(Actions actions) {
         if (actions == null) return;
         TicTacToeActions action = (TicTacToeActions) actions;
-        cells[action.x][action.y].setSymbol(action.symbol);
+        field.getCell(action.x, action.y).setSymbol(action.symbol);
     }
 
     @Override
     public void loadFromState(GameState gameState) {
         TicTacToeState state = (TicTacToeState) gameState;
-        for (int i = 0; i < TicTacToeConstants.SIZE; i++) {
-            for (int j = 0; j < TicTacToeConstants.SIZE; j++) {
-                cells[i][j].setSymbol(state.getSymbol(i, j));
+        for (int x = 0; x < field.WIDTH; x++) {
+            for (int y = 0; y < field.HEIGHT; y++) {
+                field.getCell(x, y).setSymbol(state.getSymbol(x, y));
             }
         }
     }

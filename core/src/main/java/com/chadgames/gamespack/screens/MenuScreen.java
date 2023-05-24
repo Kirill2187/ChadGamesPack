@@ -6,12 +6,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -19,7 +22,9 @@ import com.chadgames.gamespack.GameManager;
 import com.chadgames.gamespack.MyAssetManager;
 import com.chadgames.gamespack.games.GameType;
 import com.chadgames.gamespack.ui.GameButton;
+import com.chadgames.gamespack.ui.UIScale;
 import com.chadgames.gamespack.utils.Constants;
+import static com.chadgames.gamespack.ui.UIScale.*;
 
 /** First screen of the application. Displayed after the application is created. */
 public class MenuScreen implements Screen {
@@ -27,7 +32,7 @@ public class MenuScreen implements Screen {
     private Viewport viewport;
     private Skin skin;
     public MenuScreen() {
-        viewport = new ExtendViewport(225, 400); // TODO: remove magic numbers, should be some global constants
+        viewport = new ExtendViewport(BASE_WIDTH, BASE_HEIGHT);
         stage = new Stage(viewport);
         skin = GameManager.getInstance().skin;
 
@@ -36,21 +41,23 @@ public class MenuScreen implements Screen {
 
     private void createUI() {
         Table root = new Table();
-        root.debugAll();
+        if (GameManager.DEBUG) root.debugAll();
         root.setFillParent(true);
         stage.addActor(root);
         root.top();
 
         Label testLabel = new Label("Test", skin, "title");
-        root.add(testLabel).expandX().row();
+        root.add(testLabel).expandX().padTop(PADDING).row();
 
         Table gamesTable = new Table();
-        root.add(gamesTable).expandY().row();
+        root.add(gamesTable).grow().row();
         createGameTable(gamesTable);
 
         Table usernameTable = new Table();
         TextField nickTextField = new TextField(GameManager.getInstance().username, skin);
-        usernameTable.add(nickTextField).padRight(5).growX().minWidth(100);
+        usernameTable.add(nickTextField).padRight(PADDING).growX()
+            .minWidth(percentWidth(.5f))
+            .minHeight(percentHeight(.08f));
 
         TextButton setUsername = new TextButton("Set", skin);
         setUsername.addListener(new ClickListener() {
@@ -60,11 +67,33 @@ public class MenuScreen implements Screen {
             }
         });
         usernameTable.add(setUsername);
-        root.add(usernameTable).expandX().padLeft(10).padRight(10).row();
+        root.add(usernameTable).expandX().pad(PADDING).row();
+
+        createWaitingWindow();
+    }
+
+    private void createWaitingWindow() {
+        Table windowTable = new Table();
+        windowTable.setFillParent(true);
+        stage.addActor(windowTable);
+        windowTable.center();
+
+        Window window = new Window("", skin);
+        window.setBackground(GameManager.getInstance().skin.newDrawable("white", 0.5f, 0.5f, 0.5f, 1));
+        windowTable.add(window).size(percentWidth(.5f), percentWidth(.3f));
+
+        window.add(new Label("Connecting...", skin)).row();
+        windowTable.setBackground(GameManager.getInstance().skin.newDrawable("white", 0, 0, 0, 0.5f));
+
+        GameManager.getInstance().onConnected.subscribe(() -> {
+            windowTable.addAction(Actions.sequence(Actions.fadeOut(1f), Actions.removeActor()));
+            GameManager.getInstance().onConnected.unsubscribe("waitWindow");
+        }, "waitWindow");
     }
 
     void createGameTable(Table gameTable) {
         MyAssetManager manager = GameManager.getInstance().assetManager;
+        gameTable.align(Align.top);
         for (GameType gameType : GameType.values()) {
             GameButton button = new GameButton(manager.getIcon(gameType.name().toLowerCase()),
             gameType.name(), new ClickListener() {
@@ -73,7 +102,7 @@ public class MenuScreen implements Screen {
                     GameManager.getInstance().launchGame(gameType);
                 }
             });
-            gameTable.add(button).pad(5);
+            gameTable.add(button).pad(PADDING).growX();
         }
     }
 
@@ -84,7 +113,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(skin.getColor("green"));
 
         stage.act(delta);
         stage.draw();
